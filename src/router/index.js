@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import PageHome from "@/components/PageHome.vue";
 import PageThreadShow from "@/components/PageThreadShow.vue";
 import PageNotFound from "@/components/PageNotFound.vue";
+import sourceData from "@/data.json";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +17,21 @@ const router = createRouter({
       name: "ThreadShow",
       component: PageThreadShow,
       props: true,
+      beforeEnter(to, from, next) {
+        const threadExists = sourceData.threads.find(
+          (thread) => thread.id === to.params.id
+        );
+        if (threadExists) {
+          return next();
+        } else {
+          return next({
+            name: "NotFound",
+            params: { pathMatch: to.path.substring(1).split("/") },
+            query: to.query,
+            hash: to.hash,
+          });
+        }
+      },
     },
     {
       path: "/:pathMatch(.*)*",
