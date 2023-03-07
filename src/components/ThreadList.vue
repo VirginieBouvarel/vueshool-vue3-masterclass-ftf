@@ -25,7 +25,11 @@ function userById(userId) {
       <div v-for="thread in props.threads" :key="thread.id" class="thread">
         <div>
           <p>
-            <a href="#">{{ thread.title }}</a>
+            <router-link
+              :to="{ name: 'ThreadShow', params: { id: thread.id } }"
+            >
+              {{ thread.title }}
+            </router-link>
           </p>
           <p class="text-faded text-xsmall">
             By <a href="#">{{ userById(thread.userId).name }}</a
