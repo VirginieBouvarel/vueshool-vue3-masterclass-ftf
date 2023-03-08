@@ -1,22 +1,3 @@
-<script setup>
-import sourceData from "@/data.json";
-import { reactive } from "vue";
-
-const props = defineProps({
-  threads: { type: Array, required: true },
-});
-
-// const posts = reactive(sourceData.posts);
-const users = reactive(sourceData.users);
-
-// function postById(postId) {
-//   return posts.find((post) => post.id === postId);
-// }
-function userById(userId) {
-  return users.find((user) => user.id === userId);
-}
-</script>
-
 <template>
   <div class="col-full">
     <div class="thread-list">
@@ -59,5 +40,20 @@ function userById(userId) {
     </div>
   </div>
 </template>
+
+<script setup>
+import sourceData from "@/data.json";
+import { reactive } from "vue";
+
+const props = defineProps({
+  threads: { type: Array, required: true },
+});
+
+const users = reactive(sourceData.users);
+
+function userById(userId) {
+  return users.find((user) => user.id === userId);
+}
+</script>
 
 <style lang="scss" scoped></style>

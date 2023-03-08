@@ -1,3 +1,30 @@
+<template>
+  <div v-if="thread" class="col-large push-top">
+    <h1>{{ thread.title }}</h1>
+
+    <post-list :posts="threadPosts" />
+
+    <div class="col-full">
+      <form @submit.prevent="addPost">
+        <div class="form-group">
+          <textarea
+            id=""
+            class="form-input"
+            name="content"
+            rows="10"
+            cols="30"
+            v-model="newPostText"
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-blue">Submit post</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import sourceData from "@/data.json";
 import { ref, reactive, computed } from "vue";
@@ -30,32 +57,5 @@ function addPost() {
   newPostText.value = "";
 }
 </script>
-
-<template>
-  <div v-if="thread" class="col-large push-top">
-    <h1>{{ thread.title }}</h1>
-
-    <post-list :posts="threadPosts" />
-
-    <div class="col-full">
-      <form @submit.prevent="addPost">
-        <div class="form-group">
-          <textarea
-            id=""
-            class="form-input"
-            name="content"
-            rows="10"
-            cols="30"
-            v-model="newPostText"
-          ></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button class="btn-blue">Submit post</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped></style>

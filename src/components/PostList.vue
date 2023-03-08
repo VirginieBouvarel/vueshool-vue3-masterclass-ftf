@@ -1,21 +1,3 @@
-<script setup>
-import sourceData from "@/data.json";
-import { reactive } from "vue";
-
-const props = defineProps({
-  posts: {
-    type: Array,
-    required: true,
-  },
-});
-
-const users = reactive(sourceData.users);
-
-function userById(userId) {
-  return users.find((user) => user.id === userId);
-}
-</script>
-
 <template>
   <div class="post-list">
     <div class="post" v-for="post in props.posts" :key="post.id">
@@ -49,5 +31,23 @@ function userById(userId) {
     </div>
   </div>
 </template>
+
+<script setup>
+import sourceData from "@/data.json";
+import { reactive } from "vue";
+
+const props = defineProps({
+  posts: {
+    type: Array,
+    required: true,
+  },
+});
+
+const users = reactive(sourceData.users);
+
+function userById(userId) {
+  return users.find((user) => user.id === userId);
+}
+</script>
 
 <style lang="scss" scoped></style>
