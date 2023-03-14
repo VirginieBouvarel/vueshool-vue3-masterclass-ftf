@@ -10,8 +10,6 @@
 <script setup>
 import sourceData from "@/data.json";
 import { reactive, computed } from "vue";
-import PostList from "@/components/PostList.vue";
-import PostEditor from "@/components/PostEditor.vue";
 
 const props = defineProps({
   id: { type: String, required: true },

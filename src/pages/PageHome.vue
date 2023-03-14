@@ -6,7 +6,6 @@
 <script setup>
 import { reactive } from "vue";
 import sourceData from "@/data.json";
-import ThreadList from "@/components/ThreadList.vue";
 
 const threads = reactive(sourceData.threads);
 </script>

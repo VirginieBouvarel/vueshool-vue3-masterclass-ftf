@@ -35,7 +35,6 @@
 <script setup>
 import { reactive } from "vue";
 import sourceData from "@/data.json";
-import AppDate from "@/components/AppDate.vue";
 
 const props = defineProps({
   posts: {
