@@ -1,13 +1,13 @@
 <template>
   <h1>Welcome to the Forum</h1>
-  <ThreadList :threads="threads" />
+  <ForumList :forums="forums" />
 </template>
 
 <script setup>
 import { reactive } from "vue";
 import sourceData from "@/data.json";
 
-const threads = reactive(sourceData.threads);
+const forums = reactive(sourceData.forums);
 </script>
 
 <style lang="scss" scoped></style>
