@@ -44,17 +44,16 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import sourceData from "@/data.json";
+import { useUsersStore } from "@/stores/UsersStore";
+import { storeToRefs } from "pinia";
+const { users } = storeToRefs(useUsersStore());
 
 const props = defineProps({
   threads: { type: Array, required: true },
 });
 
-const users = reactive(sourceData.users);
-
 function userById(userId) {
-  return users.find((user) => user.id === userId);
+  return users.value.find((user) => user.id === userId);
 }
 </script>
 

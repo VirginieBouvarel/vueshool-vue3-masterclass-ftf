@@ -4,10 +4,9 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import sourceData from "@/data.json";
-
-const categories = reactive(sourceData.categories);
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { storeToRefs } from "pinia";
+const { categories } = storeToRefs(useCategoriesStore());
 </script>
 
 <style lang="scss" scoped></style>

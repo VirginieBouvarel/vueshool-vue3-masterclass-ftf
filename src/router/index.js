@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+
 import PageHome from "@/pages/PageHome.vue";
 import PageForum from "@/pages/PageForum.vue";
 import PageCategory from "@/pages/PageCategory.vue";
 import PageThreadShow from "@/pages/PageThreadShow.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
-import sourceData from "@/data.json";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,7 +33,8 @@ const router = createRouter({
       component: PageThreadShow,
       props: true,
       beforeEnter(to, from, next) {
-        const threadExists = sourceData.threads.find(
+        const threadsStore = useThreadsStore();
+        const threadExists = threadsStore.threads.find(
           (thread) => thread.id === to.params.id
         );
         if (threadExists) {
@@ -51,14 +53,6 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: PageNotFound,
-    },
-    {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/AboutView.vue"),
     },
   ],
 });

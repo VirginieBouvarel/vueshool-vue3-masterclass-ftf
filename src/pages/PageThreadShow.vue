@@ -8,19 +8,23 @@
 </template>
 
 <script setup>
-import sourceData from "@/data.json";
-import { reactive, computed } from "vue";
+import { computed } from "vue";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import { usePostsStore } from "@/stores/PostsStore";
+import { storeToRefs } from "pinia";
+
+const { threads } = storeToRefs(useThreadsStore());
+const { posts } = storeToRefs(usePostsStore());
 
 const props = defineProps({
   id: { type: String, required: true },
 });
 
-const threads = reactive(sourceData.threads);
-const posts = reactive(sourceData.posts);
-
-const thread = computed(() => threads.find((thread) => thread.id === props.id));
+const thread = computed(() =>
+  threads.value.find((thread) => thread.id === props.id)
+);
 const threadPosts = computed(() =>
-  posts.filter((post) => post.threadId === props.id)
+  posts.value.filter((post) => post.threadId === props.id)
 );
 
 function addPost(event) {
@@ -28,7 +32,7 @@ function addPost(event) {
     ...event.post,
     threadId: props.id,
   };
-  posts.push(post);
+  posts.value.push(post);
   thread.value.posts.push(post.id);
 
   console.log(post);

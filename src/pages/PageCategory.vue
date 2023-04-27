@@ -8,16 +8,21 @@
 
 <script setup>
 import { computed } from "vue";
-import sourceData from "@/data.json";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { useForumsStore } from "@/stores/ForumsStore";
+import { storeToRefs } from "pinia";
+const { categories } = storeToRefs(useCategoriesStore());
+const { forums } = storeToRefs(useForumsStore());
 
 const props = defineProps({
   id: { type: String, required: true },
 });
+
 const category = computed(() =>
-  sourceData.categories.find((category) => category.id === props.id)
+  categories.find((category) => category.id === props.id)
 );
 function getForumsForCategory(category) {
-  return sourceData.forums.filter((forum) => forum.categoryId === category.id);
+  return forums.filter((forum) => forum.categoryId === category.id);
 }
 </script>
 

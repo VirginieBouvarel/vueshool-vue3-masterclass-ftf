@@ -9,13 +9,14 @@
 </template>
 
 <script setup>
-import sourceData from "@/data.json";
+import { useForumsStore } from "@/stores/ForumsStore";
+const forumsStore = useForumsStore();
 
 const props = defineProps({
   categories: { type: Array, required: true },
 });
 function getForumsForCategory(category) {
-  return sourceData.forums.filter((forum) => forum.categoryId === category.id);
+  return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
 }
 </script>
 

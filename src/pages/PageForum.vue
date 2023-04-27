@@ -16,16 +16,18 @@
 
 <script setup>
 import { computed } from "vue";
-import sourceData from "@/data.json";
+import { useForumsStore } from "@/stores/ForumsStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import { storeToRefs } from "pinia";
+const { forums } = storeToRefs(useForumsStore());
+const threadsStore = useThreadsStore();
 
 const props = defineProps({
   id: { type: String, required: true },
 });
-const forum = computed(() =>
-  sourceData.forums.find((forum) => forum.id === props.id)
-);
+const forum = computed(() => forums.find((forum) => forum.id === props.id));
 const threads = computed(() =>
-  sourceData.threads.filter((thread) => thread.forumId === props.id)
+  threadsStore.threads.filter((thread) => thread.forumId === props.id)
 );
 </script>
 
