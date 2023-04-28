@@ -13,29 +13,23 @@ import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { storeToRefs } from "pinia";
 
-const { threads } = storeToRefs(useThreadsStore());
-const { posts } = storeToRefs(usePostsStore());
-
 const props = defineProps({
   id: { type: String, required: true },
 });
 
+const { threads } = storeToRefs(useThreadsStore());
 const thread = computed(() =>
   threads.value.find((thread) => thread.id === props.id)
 );
+
+const postsStore = usePostsStore();
 const threadPosts = computed(() =>
-  posts.value.filter((post) => post.threadId === props.id)
+  postsStore.posts.value.filter((post) => post.threadId === props.id)
 );
 
 function addPost(event) {
-  const post = {
-    ...event.post,
-    threadId: props.id,
-  };
-  posts.value.push(post);
-  thread.value.posts.push(post.id);
-
-  console.log(post);
+  const post = { ...event.post, threadId: props.id };
+  postsStore.createPosts(post);
 }
 </script>
 
