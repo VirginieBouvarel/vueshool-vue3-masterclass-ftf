@@ -24,7 +24,7 @@ const thread = computed(() =>
 
 const postsStore = usePostsStore();
 const threadPosts = computed(() =>
-  postsStore.posts.value.filter((post) => post.threadId === props.id)
+  postsStore.posts.filter((post) => post.threadId === props.id)
 );
 
 function addPost(event) {
