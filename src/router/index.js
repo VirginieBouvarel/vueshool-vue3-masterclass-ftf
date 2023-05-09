@@ -5,6 +5,7 @@ import PageHome from "@/pages/PageHome.vue";
 import PageForum from "@/pages/PageForum.vue";
 import PageCategory from "@/pages/PageCategory.vue";
 import PageThreadShow from "@/pages/PageThreadShow.vue";
+import PageProfile from "@/pages/PageProfile.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 
 const router = createRouter({
@@ -48,6 +49,11 @@ const router = createRouter({
           });
         }
       },
+    },
+    {
+      path: "/me",
+      name: "Profile",
+      component: PageProfile,
     },
     {
       path: "/:pathMatch(.*)*",
