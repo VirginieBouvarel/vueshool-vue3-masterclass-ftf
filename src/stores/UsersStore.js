@@ -41,7 +41,12 @@ export const useUsersStore = defineStore("UsersStore", {
       };
     },
   },
-  actions: {},
+  actions: {
+    updateUser(user) {
+      const userIndex = this.users.findIndex((item) => item.id === user.id);
+      this.users[userIndex] = user;
+    },
+  },
 });
 
 if (import.meta.hot) {
