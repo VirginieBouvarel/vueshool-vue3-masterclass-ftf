@@ -54,6 +54,13 @@ const router = createRouter({
       path: "/me",
       name: "Profile",
       component: PageProfile,
+      meta: { toTop: true, smoothScroll: true },
+    },
+    {
+      path: "/me/edit",
+      name: "ProfileEdit",
+      component: PageProfile,
+      props: { edit: true },
     },
     {
       path: "/:pathMatch(.*)*",
@@ -61,6 +68,12 @@ const router = createRouter({
       component: PageNotFound,
     },
   ],
+  scrollBehavior(to) {
+    const scroll = {};
+    if (to.meta.toTop) scroll.top = 0;
+    if (to.meta.smoothScroll) scroll.behavior = "smooth";
+    return scroll;
+  },
 });
 
 export default router;
