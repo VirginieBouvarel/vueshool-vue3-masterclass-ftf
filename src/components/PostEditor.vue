@@ -26,14 +26,7 @@ const emit = defineEmits(["save"]);
 const text = ref("");
 
 function save() {
-  const postId = "gggg" + Math.round();
-  const post = {
-    id: postId,
-    text: text.value,
-    publishedAt: Math.floor(Date.now() / 1000),
-    userId: "rpbB8C6ifrYmNDufMERWfQUoa202",
-  };
-
+  const post = { text: text.value };
   emit("save", { post });
   text.value = "";
 }
