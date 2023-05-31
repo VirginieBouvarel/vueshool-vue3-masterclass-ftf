@@ -2,19 +2,8 @@
   <div class="container">
     <div class="flex-grid">
       <div class="col-3 push-top">
-        <UserProfileCard :user="user" />
-        <UserProfileCardEditor :user="user" />
-
-        <p class="text-xsmall text-faded text-center">
-          Member since june 2003, last visited 4 hours ago
-        </p>
-
-        <div class="text-center">
-          <hr />
-          <a href="edit-profile.html" class="btn-green btn-small"
-            >Edit Profile</a
-          >
-        </div>
+        <UserProfileCardEditor v-if="edit" :user="authUser" />
+        <UserProfileCard v-else :user="authUser" />
       </div>
 
       <div class="col-7 push-top">
@@ -23,7 +12,7 @@
           <a href="#">See only started threads?</a>
         </div>
         <hr />
-        <PostList :posts="user.posts" />
+        <PostList :posts="authUser.posts" />
       </div>
     </div>
   </div>
@@ -31,5 +20,10 @@
 
 <script setup>
 import { useUsersStore } from "@/stores/UsersStore";
-const user = useUsersStore().authUser;
+import { storeToRefs } from "pinia";
+const { authUser } = storeToRefs(useUsersStore());
+
+defineProps({
+  edit: { type: Boolean, default: false },
+});
 </script>

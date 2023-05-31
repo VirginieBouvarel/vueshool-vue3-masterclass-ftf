@@ -75,7 +75,7 @@
       </div>
 
       <div class="btn-group space-between">
-        <button class="btn-ghost">Cancel</button>
+        <button class="btn-ghost" @click.prevent="cancel">Cancel</button>
         <button type="submit" class="btn-blue">Save</button>
       </div>
     </form>
@@ -85,13 +85,21 @@
 <script setup>
 import { reactive } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
+import { useRouter } from "vue-router";
+const usersStore = useUsersStore();
+const router = useRouter();
 
 const props = defineProps({
   user: { type: Object, required: true },
 });
+
 const activeUser = reactive({ ...props.user });
 
-const save = () => {
-  useUsersStore().updateUser({ ...activeUser });
-};
+function save() {
+  usersStore.updateUser({ ...activeUser });
+  router.push({ name: "Profile" }).catch((error) => console.log(error));
+}
+function cancel() {
+  router.push({ name: "Profile" }).catch((error) => console.log(error));
+}
 </script>

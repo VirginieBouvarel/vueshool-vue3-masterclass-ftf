@@ -81,5 +81,6 @@
 
 <script setup>
 import { useUsersStore } from "@/stores/UsersStore";
-const { authUser } = useUsersStore();
+import { storeToRefs } from "pinia";
+const { authUser } = storeToRefs(useUsersStore());
 </script>
