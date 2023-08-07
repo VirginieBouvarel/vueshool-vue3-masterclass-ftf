@@ -12,7 +12,7 @@ export const usePostsStore = defineStore("PostsStore", {
   getters: {},
 
   actions: {
-    createPosts(post) {
+    createPost(post) {
       const usersStore = useUsersStore();
       const threadsStore = useThreadsStore();
 

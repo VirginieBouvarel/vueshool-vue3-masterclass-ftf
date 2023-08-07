@@ -29,7 +29,7 @@ const threadPosts = computed(() =>
 
 function addPost(event) {
   const post = { ...event.post, threadId: props.id };
-  postsStore.createPosts(post);
+  postsStore.createPost(post);
 }
 </script>
 
