@@ -3,9 +3,6 @@ import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
 import sourceData from "@/data";
 
-const usersStore = useUsersStore();
-const threadsStore = useThreadsStore();
-
 export const usePostsStore = defineStore("PostsStore", {
   state: () => {
     return {
@@ -16,6 +13,9 @@ export const usePostsStore = defineStore("PostsStore", {
 
   actions: {
     createPosts(post) {
+      const usersStore = useUsersStore();
+      const threadsStore = useThreadsStore();
+
       post.id = "ggqq" + Math.random();
       post.userId = usersStore.authUser.id;
       post.publishedAt = Math.floor(Date.now() / 1000);
