@@ -14,16 +14,19 @@ export const usePostsStore = defineStore("PostsStore", {
   actions: {
     createPost(post) {
       const usersStore = useUsersStore();
-      const threadsStore = useThreadsStore();
-
       post.id = "ggqq" + Math.random();
       post.userId = usersStore.authUser.id;
       post.publishedAt = Math.floor(Date.now() / 1000);
       this.posts.push(post);
+      this.appendPostToThread({ postId: post.id, threadId: post.threadId });
+    },
+    appendPostToThread({ postId, threadId }) {
+      const threadsStore = useThreadsStore();
       const thread = threadsStore.threads.find(
-        (thread) => thread.id === post.threadId
+        (thread) => thread.id === threadId
       );
-      thread.posts.push(post.id);
+      thread.posts = thread.posts || [];
+      thread.posts.push(postId);
     },
   },
 });
