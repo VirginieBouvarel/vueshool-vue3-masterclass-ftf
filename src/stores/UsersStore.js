@@ -19,6 +19,7 @@ export const useUsersStore = defineStore("UsersStore", {
       const threadsStore = useThreadsStore();
 
       return {
+        // authUser
         ...user,
         // authUser.posts
         get posts() {
