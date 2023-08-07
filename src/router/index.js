@@ -6,6 +6,7 @@ import PageForum from "@/pages/PageForum.vue";
 import PageCategory from "@/pages/PageCategory.vue";
 import PageThreadShow from "@/pages/PageThreadShow.vue";
 import PageThreadCreate from "@/pages/PageThreadCreate.vue";
+import PageThreadEdit from "@/pages/PageThreadEdit.vue";
 import PageProfile from "@/pages/PageProfile.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 
@@ -64,9 +65,15 @@ const router = createRouter({
       },
     },
     {
-      path: "/form/:forumId/thread/create",
+      path: "/forum/:forumId/thread/create",
       name: "ThreadCreate",
       component: PageThreadCreate,
+      props: true,
+    },
+    {
+      path: "/thread/:id/edit",
+      name: "ThreadEdit",
+      component: PageThreadEdit,
       props: true,
     },
     {

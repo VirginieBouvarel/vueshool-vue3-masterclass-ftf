@@ -3,7 +3,7 @@
     <div class="form-group">
       <label for="thread_title">Title:</label>
       <input
-        v-model="title"
+        v-model="form.title"
         type="text"
         id="thread_title"
         class="form-input"
@@ -14,7 +14,7 @@
     <div class="form-group">
       <label for="thread_content">Content:</label>
       <textarea
-        v-model="text"
+        v-model="form.text"
         id="thread_content"
         class="form-input"
         name="content"
@@ -24,7 +24,7 @@
     </div>
 
     <div class="btn-group">
-      <button @click.prevent="emit('cancel')" class="btn btn-ghost">
+      <button @click.prevent="$emit('cancel')" class="btn btn-ghost">
         Cancel
       </button>
       <button class="btn btn-blue" type="submit" name="Publish">Publish</button>
@@ -33,15 +33,22 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { reactive } from "vue";
 
-const title = ref("");
-const text = ref("");
+const props = defineProps({
+  title: { type: String, default: "" },
+  text: { type: String, default: "" },
+});
 
-const emit = defineEmits(["save", "cancel"]);
+const emit = defineEmits(["save"]);
+
+const form = reactive({
+  title: props.title,
+  text: props.text,
+});
 
 function save() {
-  emit("save", { title, text });
+  emit("save", { ...form });
 }
 </script>
 

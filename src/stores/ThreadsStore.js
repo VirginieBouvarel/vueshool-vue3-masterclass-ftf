@@ -20,12 +20,25 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       const userId = usersStore.authUser.id;
       const publishedAt = Math.floor(Date.now() / 1000);
       const thread = { forumId, title, publishedAt, userId, id };
-      this.threads.push(thread);
+      this.setThread({ thread });
 
       this.appendThreadToUser({ userId, threadId: id });
       this.appendThreadToForum({ forumId, threadId: id });
       postsStore.createPost({ text, threadId: id });
+
       return this.threads.find((thread) => thread.id === id);
+    },
+    updateThread({ text, title, id }) {
+      const thread = this.threads.find((thread) => thread.id === id);
+      const newThread = { ...thread, title };
+      this.setThread({ thread: newThread });
+
+      const postsStore = usePostsStore();
+      const post = postsStore.posts.find((post) => post.id === thread.posts[0]);
+      const newPost = { ...post, text };
+      this.setPost({ post: newPost });
+
+      return newThread;
     },
     appendThreadToForum({ forumId, threadId }) {
       const forumsStore = useForumsStore();
@@ -38,6 +51,25 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       const user = usersStore.users.find((user) => user.id === userId);
       user.threads = user.threads || [];
       user.threads.push(threadId);
+    },
+    setThread({ thread }) {
+      const index = this.threads.findIndex((item) => item.id === thread.id);
+      const isExistingThread = index !== -1;
+      if (isExistingThread) {
+        this.threads[index] = thread;
+        return;
+      }
+      this.threads.push(thread);
+    },
+    setPost({ post }) {
+      const postsStore = usePostsStore();
+      const index = postsStore.posts.findIndex((item) => item.id === post.id);
+      const isExistingPost = index !== -1;
+      if (isExistingPost) {
+        postsStore.posts[index] = post;
+        return;
+      }
+      this.posts.push(post);
     },
   },
 });
