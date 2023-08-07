@@ -27,25 +27,29 @@
       <button @click.prevent="$emit('cancel')" class="btn btn-ghost">
         Cancel
       </button>
-      <button class="btn btn-blue" type="submit" name="Publish">Publish</button>
+      <button class="btn btn-blue" type="submit" name="Publish">
+        {{ existing ? "Update" : "Publish" }}
+      </button>
     </div>
   </form>
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 
 const props = defineProps({
   title: { type: String, default: "" },
   text: { type: String, default: "" },
 });
 
-const emit = defineEmits(["save"]);
+const emit = defineEmits(["save", "cancel"]);
 
 const form = reactive({
   title: props.title,
   text: props.text,
 });
+
+const existing = computed(() => !!props.title);
 
 function save() {
   emit("save", { ...form });

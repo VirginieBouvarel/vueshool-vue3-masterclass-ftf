@@ -42,6 +42,6 @@ async function save({ title, text }) {
 }
 
 function cancel() {
-  router.push({ name: "Forum", params: { id: props.forumId } });
+  router.push({ name: "ThreadShow", params: { id: props.id } });
 }
 </script>
