@@ -29,7 +29,7 @@
       </div>
 
       <div class="btn-group">
-        <button class="btn btn-ghost">Cancel</button>
+        <button @click="cancel" class="btn btn-ghost">Cancel</button>
         <button class="btn btn-blue" type="submit" name="Publish">
           Publish
         </button>
@@ -39,8 +39,12 @@
 </template>
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useForumsStore } from "@/stores/ForumsStore";
+
+const router = useRouter();
+const threadsStore = useThreadsStore();
 const forumsStore = useForumsStore();
 
 const title = ref("");
@@ -54,8 +58,16 @@ const forum = computed(() =>
   forumsStore.forums.find((forum) => forum.id === props.forumId)
 );
 
-function save() {
-  const threadsStore = useThreadsStore();
-  threadsStore.createThread({ text, title, forumId: props.forumId });
+async function save() {
+  const thread = await threadsStore.createThread({
+    text,
+    title,
+    forumId: props.forumId,
+  });
+  router.push({ name: "ThreadShow", params: { id: thread.id } });
+}
+
+function cancel() {
+  router.push({ name: "Forum", params: { id: props.forumId } });
 }
 </script>

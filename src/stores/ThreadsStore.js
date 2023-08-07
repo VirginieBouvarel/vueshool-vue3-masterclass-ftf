@@ -12,8 +12,7 @@ export const useThreadsStore = defineStore("ThreadsStore", {
   },
   getters: {},
   actions: {
-    createThread({ text, title, forumId }) {
-      console.log("%c createThread", "color: yellow");
+    async createThread({ text, title, forumId }) {
       const usersStore = useUsersStore();
       const postsStore = usePostsStore();
 
@@ -26,6 +25,7 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       this.appendThreadToUser({ userId, threadId: id });
       this.appendThreadToForum({ forumId, threadId: id });
       postsStore.createPost({ text, threadId: id });
+      return this.threads.find((thread) => thread.id === id);
     },
     appendThreadToForum({ forumId, threadId }) {
       const forumsStore = useForumsStore();
