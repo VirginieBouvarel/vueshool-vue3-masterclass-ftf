@@ -38,18 +38,24 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
+import { useForumsStore } from "@/stores/ForumsStore";
+const forumsStore = useForumsStore();
 
 const title = ref("");
 const text = ref("");
 
 const props = defineProps({
-  forum: { type: Object, required: true },
+  forumId: { type: String, required: true },
 });
+
+const forum = computed(() =>
+  forumsStore.forums.find((forum) => forum.id === props.forumId)
+);
 
 function save() {
   const threadsStore = useThreadsStore();
-  threadsStore.createThread({ text, title, forumId: props.forum.id });
+  threadsStore.createThread({ text, title, forumId: props.forumId });
 }
 </script>

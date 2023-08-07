@@ -13,6 +13,7 @@ export const useThreadsStore = defineStore("ThreadsStore", {
   getters: {},
   actions: {
     createThread({ text, title, forumId }) {
+      console.log("%c createThread", "color: yellow");
       const usersStore = useUsersStore();
       const postsStore = usePostsStore();
 
@@ -20,7 +21,7 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       const userId = usersStore.authUser.id;
       const publishedAt = Math.floor(Date.now() / 1000);
       const thread = { forumId, title, publishedAt, userId, id };
-      this.threads.push({ thread });
+      this.threads.push(thread);
 
       this.appendThreadToUser({ userId, threadId: id });
       this.appendThreadToForum({ forumId, threadId: id });

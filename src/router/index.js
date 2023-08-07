@@ -5,6 +5,7 @@ import PageHome from "@/pages/PageHome.vue";
 import PageForum from "@/pages/PageForum.vue";
 import PageCategory from "@/pages/PageCategory.vue";
 import PageThreadShow from "@/pages/PageThreadShow.vue";
+import PageThreadCreate from "@/pages/PageThreadCreate.vue";
 import PageProfile from "@/pages/PageProfile.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 
@@ -15,6 +16,18 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: PageHome,
+    },
+    {
+      path: "/me",
+      name: "Profile",
+      component: PageProfile,
+      meta: { toTop: true, smoothScroll: true },
+    },
+    {
+      path: "/me/edit",
+      name: "ProfileEdit",
+      component: PageProfile,
+      props: { edit: true },
     },
     {
       path: "/category/:id",
@@ -51,16 +64,10 @@ const router = createRouter({
       },
     },
     {
-      path: "/me",
-      name: "Profile",
-      component: PageProfile,
-      meta: { toTop: true, smoothScroll: true },
-    },
-    {
-      path: "/me/edit",
-      name: "ProfileEdit",
-      component: PageProfile,
-      props: { edit: true },
+      path: "/form/:forumId/thread/create",
+      name: "ThreadCreate",
+      component: PageThreadCreate,
+      props: true,
     },
     {
       path: "/:pathMatch(.*)*",
