@@ -1,3 +1,4 @@
+import { findById } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -22,9 +23,7 @@ export const usePostsStore = defineStore("PostsStore", {
     },
     appendPostToThread({ postId, threadId }) {
       const threadsStore = useThreadsStore();
-      const thread = threadsStore.threads.find(
-        (thread) => thread.id === threadId
-      );
+      const thread = findById(threadsStore.threads, threadId);
       thread.posts = thread.posts || [];
       thread.posts.push(postId);
     },

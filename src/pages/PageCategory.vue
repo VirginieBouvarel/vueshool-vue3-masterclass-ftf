@@ -7,6 +7,7 @@
 </template>
 
 <script setup>
+import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
@@ -18,9 +19,7 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-const category = computed(() =>
-  categories.find((category) => category.id === props.id)
-);
+const category = computed(() => findById(categories, props.id));
 function getForumsForCategory(category) {
   return forums.filter((forum) => forum.categoryId === category.id);
 }

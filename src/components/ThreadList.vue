@@ -44,6 +44,7 @@
 </template>
 
 <script setup>
+import { findById } from "@/helpers";
 import { useUsersStore } from "@/stores/UsersStore";
 import { storeToRefs } from "pinia";
 const { users } = storeToRefs(useUsersStore());
@@ -53,7 +54,7 @@ const props = defineProps({
 });
 
 function userById(userId) {
-  return users.value.find((user) => user.id === userId);
+  return findById(users.value, userId);
 }
 </script>
 

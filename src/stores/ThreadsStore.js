@@ -1,3 +1,4 @@
+import { findById, upsert } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useForumsStore } from "@/stores/ForumsStore";
@@ -26,15 +27,15 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       this.appendThreadToForum({ forumId, threadId: id });
       postsStore.createPost({ text, threadId: id });
 
-      return this.threads.find((thread) => thread.id === id);
+      return findById(this.threads, id);
     },
     updateThread({ text, title, id }) {
-      const thread = this.threads.find((thread) => thread.id === id);
+      const thread = findById(this.threads, id);
       const newThread = { ...thread, title };
       this.setThread({ thread: newThread });
 
       const postsStore = usePostsStore();
-      const post = postsStore.posts.find((post) => post.id === thread.posts[0]);
+      const post = findById(postsStore.posts, thread.posts[0]);
       const newPost = { ...post, text };
       this.setPost({ post: newPost });
 
@@ -42,34 +43,22 @@ export const useThreadsStore = defineStore("ThreadsStore", {
     },
     appendThreadToForum({ forumId, threadId }) {
       const forumsStore = useForumsStore();
-      const forum = forumsStore.forums.find((forum) => forum.id === forumId);
+      const forum = findById(forumsStore.forums, forumId);
       forum.threads = forum.threads || [];
       forum.threads.push(threadId);
     },
     appendThreadToUser({ userId, threadId }) {
       const usersStore = useUsersStore();
-      const user = usersStore.users.find((user) => user.id === userId);
+      const user = findById(usersStore.users, userId);
       user.threads = user.threads || [];
       user.threads.push(threadId);
     },
     setThread({ thread }) {
-      const index = this.threads.findIndex((item) => item.id === thread.id);
-      const isExistingThread = index !== -1;
-      if (isExistingThread) {
-        this.threads[index] = thread;
-        return;
-      }
-      this.threads.push(thread);
+      upsert(this.threads, thread);
     },
     setPost({ post }) {
       const postsStore = usePostsStore();
-      const index = postsStore.posts.findIndex((item) => item.id === post.id);
-      const isExistingPost = index !== -1;
-      if (isExistingPost) {
-        postsStore.posts[index] = post;
-        return;
-      }
-      this.posts.push(post);
+      upsert(postsStore.posts, post);
     },
   },
 });
