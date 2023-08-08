@@ -12,6 +12,7 @@
   </div>
 </template>
 <script setup>
+import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -25,12 +26,9 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-const thread = computed(() =>
-  threadsStore.threads.find((thread) => thread.id === props.id)
-);
-const text = computed(
-  () => postsStore.posts.find((post) => post.id === thread.value.posts[0]).text
-);
+const thread = computed(() => findById(threadsStore.threads, props.id));
+const text = computed(() => findById(postsStore.posts, thread.value.posts[0]))
+  .value.text;
 
 async function save({ title, text }) {
   const thread = await threadsStore.updateThread({

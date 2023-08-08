@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -30,9 +31,7 @@ const props = defineProps({
 });
 
 const { forums } = storeToRefs(useForumsStore());
-const forum = computed(() =>
-  forums.value.find((forum) => forum.id === props.id)
-);
+const forum = computed(() => findById(forums.value, props.id));
 
 const threadsStores = useThreadsStore();
 const threads = computed(() =>

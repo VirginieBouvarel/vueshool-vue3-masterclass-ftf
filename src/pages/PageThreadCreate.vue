@@ -7,6 +7,7 @@
   </div>
 </template>
 <script setup>
+import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -20,9 +21,7 @@ const props = defineProps({
   forumId: { type: String, required: true },
 });
 
-const forum = computed(() =>
-  forumsStore.forums.find((forum) => forum.id === props.forumId)
-);
+const forum = computed(() => findById(forumsStore.forums, props.forumId));
 
 async function save({ title, text }) {
   const thread = await threadsStore.createThread({

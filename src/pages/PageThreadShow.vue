@@ -13,6 +13,7 @@
 </template>
 
 <script setup>
+import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
@@ -23,9 +24,7 @@ const props = defineProps({
 });
 
 const { threads } = storeToRefs(useThreadsStore());
-const thread = computed(() =>
-  threads.value.find((thread) => thread.id === props.id)
-);
+const thread = computed(() => findById(threads.value, props.id));
 
 const postsStore = usePostsStore();
 const threadPosts = computed(() =>

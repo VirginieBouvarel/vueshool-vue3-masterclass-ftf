@@ -1,3 +1,4 @@
+import { findById } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -12,7 +13,7 @@ export const useUsersStore = defineStore("UsersStore", {
   },
   getters: {
     authUser: (state) => {
-      const user = state.users.find((user) => user.id === state.authId);
+      const user = findById(state.users, state.authId);
       if (!user) return null;
 
       const postsStore = usePostsStore();
