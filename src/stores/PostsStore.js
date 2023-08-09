@@ -24,9 +24,17 @@ export const usePostsStore = defineStore("PostsStore", {
         childId: post.id,
         parentId: post.threadId,
       });
+      this.appendContributorToThread(threadsStore, {
+        childId: post.userId,
+        parentId: post.threadId,
+      });
     },
     appendPostToThread: makeAppendChildToParent({
       child: "posts",
+      parent: "threads",
+    }),
+    appendContributorToThread: makeAppendChildToParent({
+      child: "contributors",
       parent: "threads",
     }),
   },
