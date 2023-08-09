@@ -6,6 +6,17 @@
         <button class="btn-green btn-small">Edit Thread</button>
       </router-link>
     </h1>
+    <p>
+      By <a href="#" class="link-unstyled">{{ thread.author.name }}</a> ,
+      <AppDate :timestamp="thread.publishedAt" />.
+      <span
+        style="float: right; margin-top: 2px"
+        class="hide-mobile text-faded text-small"
+      >
+        {{ thread.repliesCount }} replies by
+        {{ thread.contributorsCount }} contributors
+      </span>
+    </p>
 
     <post-list :posts="threadPosts" />
     <post-editor @save="addPost" />
@@ -13,18 +24,16 @@
 </template>
 
 <script setup>
-import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
-import { storeToRefs } from "pinia";
 
 const props = defineProps({
   id: { type: String, required: true },
 });
 
-const { threads } = storeToRefs(useThreadsStore());
-const thread = computed(() => findById(threads.value, props.id));
+const threadsStore = useThreadsStore();
+const thread = threadsStore.thread(props.id);
 
 const postsStore = usePostsStore();
 const threadPosts = computed(() =>

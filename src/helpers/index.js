@@ -15,6 +15,9 @@ export const makeAppendChildToParent = ({ child, parent }) => {
   return (store, { childId, parentId }) => {
     const resource = findById(store[parent], parentId);
     resource[child] = resource[child] || [];
-    resource[child].push(childId);
+
+    if (!resource[child].includes(childId)) {
+      resource[child].push(childId);
+    }
   };
 };
