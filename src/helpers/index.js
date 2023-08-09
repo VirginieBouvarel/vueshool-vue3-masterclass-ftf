@@ -10,3 +10,11 @@ export const upsert = (resources, resource) => {
   }
   resources.push(resource);
 };
+
+export const makeAppendChildToParent = ({ child, parent }) => {
+  return (store, { childId, parentId }) => {
+    const resource = findById(store[parent], parentId);
+    resource[child] = resource[child] || [];
+    resource[child].push(childId);
+  };
+};

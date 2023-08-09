@@ -1,4 +1,4 @@
-import { findById } from "@/helpers";
+import { makeAppendChildToParent } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -11,22 +11,24 @@ export const usePostsStore = defineStore("PostsStore", {
     };
   },
   getters: {},
-
   actions: {
     createPost(post) {
       const usersStore = useUsersStore();
+      const threadsStore = useThreadsStore();
+
       post.id = "ggqq" + Math.random();
       post.userId = usersStore.authUser.id;
       post.publishedAt = Math.floor(Date.now() / 1000);
       this.posts.push(post);
-      this.appendPostToThread({ postId: post.id, threadId: post.threadId });
+      this.appendPostToThread(threadsStore, {
+        childId: post.id,
+        parentId: post.threadId,
+      });
     },
-    appendPostToThread({ postId, threadId }) {
-      const threadsStore = useThreadsStore();
-      const thread = findById(threadsStore.threads, threadId);
-      thread.posts = thread.posts || [];
-      thread.posts.push(postId);
-    },
+    appendPostToThread: makeAppendChildToParent({
+      child: "posts",
+      parent: "threads",
+    }),
   },
 });
 

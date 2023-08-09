@@ -1,4 +1,4 @@
-import { findById, upsert } from "@/helpers";
+import { findById, upsert, makeAppendChildToParent } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useForumsStore } from "@/stores/ForumsStore";
@@ -15,6 +15,7 @@ export const useThreadsStore = defineStore("ThreadsStore", {
   actions: {
     async createThread({ text, title, forumId }) {
       const usersStore = useUsersStore();
+      const forumsStore = useForumsStore();
       const postsStore = usePostsStore();
 
       const id = "ggqq" + Math.random();
@@ -23,8 +24,9 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       const thread = { forumId, title, publishedAt, userId, id };
       this.setThread({ thread });
 
-      this.appendThreadToUser({ userId, threadId: id });
-      this.appendThreadToForum({ forumId, threadId: id });
+      this.appendThreadToForum(forumsStore, { childId: id, parentId: forumId });
+      this.appendThreadToUser(usersStore, { childId: id, parentId: userId });
+
       postsStore.createPost({ text, threadId: id });
 
       return findById(this.threads, id);
@@ -41,18 +43,14 @@ export const useThreadsStore = defineStore("ThreadsStore", {
 
       return newThread;
     },
-    appendThreadToForum({ forumId, threadId }) {
-      const forumsStore = useForumsStore();
-      const forum = findById(forumsStore.forums, forumId);
-      forum.threads = forum.threads || [];
-      forum.threads.push(threadId);
-    },
-    appendThreadToUser({ userId, threadId }) {
-      const usersStore = useUsersStore();
-      const user = findById(usersStore.users, userId);
-      user.threads = user.threads || [];
-      user.threads.push(threadId);
-    },
+    appendThreadToForum: makeAppendChildToParent({
+      child: "threads",
+      parent: "forums",
+    }),
+    appendThreadToUser: makeAppendChildToParent({
+      child: "threads",
+      parent: "users",
+    }),
     setThread({ thread }) {
       upsert(this.threads, thread);
     },
