@@ -14,7 +14,12 @@
           />
         </a>
 
-        <p class="desktop-only text-small">107 posts</p>
+        <p class="desktop-only text-small">
+          {{ userById(post.userId).postsCount }} posts
+        </p>
+        <p class="desktop-only text-small">
+          {{ userById(post.userId).threadsCount }} threads
+        </p>
       </div>
 
       <div class="post-content">
@@ -33,10 +38,7 @@
 </template>
 
 <script setup>
-import { findById } from "@/helpers";
 import { useUsersStore } from "@/stores/UsersStore";
-import { storeToRefs } from "pinia";
-const { users } = storeToRefs(useUsersStore());
 
 const props = defineProps({
   posts: {
@@ -46,7 +48,8 @@ const props = defineProps({
 });
 
 function userById(userId) {
-  return findById(users.value, userId);
+  const usersStore = useUsersStore();
+  return usersStore.user(userId);
 }
 </script>
 

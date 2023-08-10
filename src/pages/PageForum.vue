@@ -35,6 +35,6 @@ const forum = computed(() => findById(forums.value, props.id));
 
 const threadsStores = useThreadsStore();
 const threads = computed(() =>
-  threadsStores.threads.filter((thread) => thread.forumId === props.id)
+  forum.value.threads.map((threadId) => threadsStores.thread(threadId))
 );
 </script>
