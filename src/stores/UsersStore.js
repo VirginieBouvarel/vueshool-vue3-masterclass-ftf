@@ -12,35 +12,40 @@ export const useUsersStore = defineStore("UsersStore", {
     };
   },
   getters: {
-    authUser: (state) => {
-      const user = findById(state.users, state.authId);
-      if (!user) return null;
+    user: (state) => {
+      return (id) => {
+        const user = findById(state.users, id);
+        if (!user) return null;
 
-      const postsStore = usePostsStore();
-      const threadsStore = useThreadsStore();
+        const postsStore = usePostsStore();
+        const threadsStore = useThreadsStore();
 
-      return {
-        // authUser
-        ...user,
-        // authUser.posts
-        get posts() {
-          return postsStore.posts.filter((post) => post.userId === user.id);
-        },
-        // authUser.postsCount
-        get postsCount() {
-          return this.posts.length;
-        },
-        // authUser.posts
-        get threads() {
-          return threadsStore.threads.filter(
-            (thread) => thread.userId === user.id
-          );
-        },
-        // authUser.posts
-        get threadsCount() {
-          return this.threads.length;
-        },
+        return {
+          // authUser
+          ...user,
+          // authUser.posts
+          get posts() {
+            return postsStore.posts.filter((post) => post.userId === user.id);
+          },
+          // authUser.postsCount
+          get postsCount() {
+            return this.posts.length;
+          },
+          // authUser.posts
+          get threads() {
+            return threadsStore.threads.filter(
+              (thread) => thread.userId === user.id
+            );
+          },
+          // authUser.posts
+          get threadsCount() {
+            return this.threads.length;
+          },
+        };
       };
+    },
+    authUser: (state) => {
+      return state.user(state.authId);
     },
   },
   actions: {
