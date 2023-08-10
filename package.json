@@ -21,8 +21,10 @@
     "@vue/eslint-config-prettier": "^7.0.0",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
+    "firestore-export-import": "^1.4.0",
     "prettier": "^2.7.1",
     "unplugin-vue-components": "^0.24.1",
     "vite": "^4.0.0"
-  }
+  },  
+  "type": "module"
 }
