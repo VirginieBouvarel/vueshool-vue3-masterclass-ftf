@@ -43,8 +43,9 @@ threadsStore.fetchThread({ id: props.id }).then(async (t) => {
   await usersStore.fetchUser({ id: thread.value.userId });
 
   thread.value.posts.forEach(async (postId) => {
-    await postsStore.fetchPost({ id: postId });
-    usersStore.fetchUser({ id: thread.value.userId });
+    const post = await postsStore.fetchPost({ id: postId });
+
+    usersStore.fetchUser({ id: post.userId });
   });
 });
 
