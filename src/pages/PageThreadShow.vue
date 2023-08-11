@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -37,15 +37,14 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-onMounted(async () => {
-  console.log("%c onMounted", "color: yellow");
-  const thread = await threadsStore.fetchThread({ id: props.id });
-  console.log("%c thread :", "color: yellow", thread);
-  await usersStore.fetchUser({ id: thread.userId });
+const thread = ref(null);
+threadsStore.fetchThread({ id: props.id }).then(async (t) => {
+  thread.value = t;
+  await usersStore.fetchUser({ id: thread.value.userId });
 
-  thread.posts.forEach(async (postId) => {
+  thread.value.posts.forEach(async (postId) => {
     await postsStore.fetchPost({ id: postId });
-    usersStore.fetchUser({ id: thread.userId });
+    usersStore.fetchUser({ id: thread.value.userId });
   });
 });
 
