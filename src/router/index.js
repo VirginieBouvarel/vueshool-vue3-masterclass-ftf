@@ -1,6 +1,6 @@
-import { findById } from "@/helpers";
+// import { findById } from "@/helpers";
 import { createRouter, createWebHistory } from "vue-router";
-import { useThreadsStore } from "@/stores/ThreadsStore";
+// import { useThreadsStore } from "@/stores/ThreadsStore";
 
 import PageHome from "@/pages/PageHome.vue";
 import PageForum from "@/pages/PageForum.vue";
@@ -48,20 +48,20 @@ const router = createRouter({
       name: "ThreadShow",
       component: PageThreadShow,
       props: true,
-      beforeEnter(to, from, next) {
-        const threadsStore = useThreadsStore();
-        const threadExists = findById(threadsStore.threads, to.params.id);
-        if (threadExists) {
-          return next();
-        } else {
-          return next({
-            name: "NotFound",
-            params: { pathMatch: to.path.substring(1).split("/") },
-            query: to.query,
-            hash: to.hash,
-          });
-        }
-      },
+      // beforeEnter(to, from, next) {
+      //   const threadsStore = useThreadsStore();
+      //   const threadExists = findById(threadsStore.threads, to.params.id);
+      //   if (threadExists) {
+      //     return next();
+      //   } else {
+      //     return next({
+      //       name: "NotFound",
+      //       params: { pathMatch: to.path.substring(1).split("/") },
+      //       query: to.query,
+      //       hash: to.hash,
+      //     });
+      //   }
+      // },
     },
     {
       path: "/forum/:forumId/thread/create",
