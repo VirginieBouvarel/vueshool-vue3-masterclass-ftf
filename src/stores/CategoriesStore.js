@@ -1,10 +1,9 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import sourceData from "@/data";
 
 export const useCategoriesStore = defineStore("CategoriesStore", {
   state: () => {
     return {
-      categories: sourceData.categories,
+      categories: [],
     };
   },
   getters: {},

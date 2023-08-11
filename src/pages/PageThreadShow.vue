@@ -7,7 +7,7 @@
       </router-link>
     </h1>
     <p>
-      By <a href="#" class="link-unstyled">{{ thread.author.name }}</a> ,
+      By <a href="#" class="link-unstyled">{{ thread.author?.name }}</a> ,
       <AppDate :timestamp="thread.publishedAt" />.
       <span
         style="float: right; margin-top: 2px"
@@ -27,15 +27,29 @@
 import { computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import { useUsersStore } from "@/stores/UsersStore";
+
+const threadsStore = useThreadsStore();
+const postsStore = usePostsStore();
+const usersStore = useUsersStore();
 
 const props = defineProps({
   id: { type: String, required: true },
 });
 
-const threadsStore = useThreadsStore();
-const thread = threadsStore.thread(props.id);
+const thread = computed(() => {
+  return threadsStore.thread(props.id);
+});
 
-const postsStore = usePostsStore();
+threadsStore.fetchThread({ id: props.id }).then(async () => {
+  await usersStore.fetchUser({ id: thread.value.userId });
+
+  thread.value.posts.forEach(async (postId) => {
+    const post = await postsStore.fetchPost({ id: postId });
+    usersStore.fetchUser({ id: post.userId });
+  });
+});
+
 const threadPosts = computed(() =>
   postsStore.posts.filter((post) => post.threadId === props.id)
 );

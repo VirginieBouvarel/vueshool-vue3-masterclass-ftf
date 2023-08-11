@@ -3,18 +3,20 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { usePostsStore } from "@/stores/PostsStore";
-import sourceData from "@/data";
+import db from "@/config/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export const useThreadsStore = defineStore("ThreadsStore", {
   state: () => {
     return {
-      threads: sourceData.threads,
+      threads: [],
     };
   },
   getters: {
     thread: (state) => {
       return (id) => {
         const thread = findById(state.threads, id);
+        if (!thread) return null;
         const usersStore = useUsersStore();
         return {
           ...thread,
@@ -58,7 +60,7 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       const postsStore = usePostsStore();
       const post = findById(postsStore.posts, thread.posts[0]);
       const newPost = { ...post, text };
-      this.setPost({ post: newPost });
+      postsStore.setPost({ post: newPost });
 
       return newThread;
     },
@@ -73,9 +75,18 @@ export const useThreadsStore = defineStore("ThreadsStore", {
     setThread({ thread }) {
       upsert(this.threads, thread);
     },
-    setPost({ post }) {
-      const postsStore = usePostsStore();
-      upsert(postsStore.posts, post);
+    async fetchThread({ id }) {
+      console.log("🔥📄", id);
+      const docRef = doc(db, "threads", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const thread = { ...docSnap.data(), id: docRef.id };
+        this.setThread({ thread });
+        return thread;
+      } else {
+        console.log("No such thread document!");
+        return null;
+      }
     },
   },
 });

@@ -1,10 +1,9 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import sourceData from "@/data";
 
 export const useForumsStore = defineStore("ForumsStore", {
   state: () => {
     return {
-      forums: sourceData.forums,
+      forums: [],
     };
   },
   getters: {},
