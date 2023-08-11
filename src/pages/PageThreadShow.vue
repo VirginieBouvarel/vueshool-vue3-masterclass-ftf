@@ -37,9 +37,11 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-const thread = ref(null);
+const thread = computed(() => {
+  return threadsStore.thread(props.id);
+});
+
 threadsStore.fetchThread({ id: props.id }).then(async (t) => {
-  thread.value = t;
   await usersStore.fetchUser({ id: thread.value.userId });
 
   thread.value.posts.forEach(async (postId) => {
