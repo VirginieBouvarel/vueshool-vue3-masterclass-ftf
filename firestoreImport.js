@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(__filename);
-const tempFileName = __dirname + "/data-temp.json";
+const tempFileName = `${__dirname}/data-temp.json`;
 
 const serviceAccount = JSON.parse(
   fs.readFileSync("./serviceAccount.json", "utf8")
@@ -35,7 +35,6 @@ async function jsonToFirestore() {
       firebaseConfig.databaseURL
     );
     console.log("Firebase Initialized");
-    console.log(tempFileName);
     await firestoreService.restore(tempFileName);
     console.log("Upload Success");
   } catch (error) {
