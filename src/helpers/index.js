@@ -1,3 +1,6 @@
+import db from "@/config/firebase";
+import { doc, getDoc } from "firebase/firestore";
+
 export const findById = (resources, id) => {
   if (!resources) return null;
   return resources.find((resource) => resource.id === id);
@@ -6,11 +9,21 @@ export const findById = (resources, id) => {
 export const upsert = (resources, resource) => {
   const index = resources.findIndex((item) => item.id === resource.id);
   const isExisting = resource.id && index !== -1;
-  if (isExisting) {
-    resources[index] = resource;
-    return;
+  isExisting ? (resources[index] = resource) : resources.push(resource);
+};
+
+export const fetchItem = async ({ resources, collection, emoji, id }) => {
+  console.log("🔥", emoji, id);
+  const docRef = doc(db, collection, id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const item = { ...docSnap.data(), id: docRef.id };
+    upsert(resources, item);
+    return item;
+  } else {
+    console.log("No such document!");
+    return null;
   }
-  resources.push(resource);
 };
 
 export const makeAppendChildToParent = ({ child, parent }) => {

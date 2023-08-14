@@ -1,9 +1,7 @@
-import { upsert, makeAppendChildToParent } from "@/helpers";
+import { fetchItem, makeAppendChildToParent } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
-import db from "@/config/firebase";
-import { doc, getDoc } from "firebase/firestore";
 
 export const usePostsStore = defineStore("PostsStore", {
   state: () => {
@@ -38,20 +36,13 @@ export const usePostsStore = defineStore("PostsStore", {
       child: "contributors",
       parent: "threads",
     }),
-    setPost({ post }) {
-      upsert(this.posts, post);
-    },
-    async fetchPost({ id }) {
-      console.log("🔥💬", id);
-      const docRef = doc(db, "posts", id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const post = { ...docSnap.data(), id: docRef.id };
-        this.setPost({ post });
-        return post;
-      } else {
-        console.log("No such post document!");
-      }
+    fetchPost({ id }) {
+      return fetchItem({
+        resources: this.posts,
+        collection: "posts",
+        emoji: "💬",
+        id,
+      });
     },
   },
 });

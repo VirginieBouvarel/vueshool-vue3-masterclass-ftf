@@ -1,9 +1,7 @@
-import { findById, upsert } from "@/helpers";
+import { findById, fetchItem } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
-import db from "@/config/firebase";
-import { doc, getDoc } from "firebase/firestore";
 
 export const useUsersStore = defineStore("UsersStore", {
   state: () => {
@@ -54,20 +52,13 @@ export const useUsersStore = defineStore("UsersStore", {
       const userIndex = this.users.findIndex((item) => item.id === user.id);
       this.users[userIndex] = user;
     },
-    setUser({ user }) {
-      upsert(this.users, user);
-    },
-    async fetchUser({ id }) {
-      console.log("🔥🙋", id);
-      const docRef = doc(db, "users", id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const user = { ...docSnap.data(), id: docRef.id };
-        this.setUser({ user });
-        return user;
-      } else {
-        console.log("No such user document!");
-      }
+    fetchUser({ id }) {
+      return fetchItem({
+        resources: this.users,
+        collection: "users",
+        emoji: "🙋",
+        id,
+      });
     },
   },
 });
