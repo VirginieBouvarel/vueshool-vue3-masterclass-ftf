@@ -1,4 +1,4 @@
-import { fetchItem, makeAppendChildToParent } from "@/helpers";
+import { fetchItem, fetchItems, makeAppendChildToParent } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -42,6 +42,14 @@ export const usePostsStore = defineStore("PostsStore", {
         collection: "posts",
         emoji: "💬",
         id,
+      });
+    },
+    fetchPosts({ ids }) {
+      return fetchItems({
+        resources: this.posts,
+        collection: "posts",
+        emoji: "💬",
+        ids,
       });
     },
   },

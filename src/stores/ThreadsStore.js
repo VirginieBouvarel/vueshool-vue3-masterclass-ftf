@@ -2,6 +2,7 @@ import {
   findById,
   upsert,
   fetchItem,
+  fetchItems,
   makeAppendChildToParent,
 } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
@@ -80,6 +81,14 @@ export const useThreadsStore = defineStore("ThreadsStore", {
         collection: "threads",
         emoji: "📄",
         id,
+      });
+    },
+    fetchThreads({ ids }) {
+      return fetchItems({
+        resources: this.threads,
+        collection: "threads",
+        emoji: "📄",
+        ids,
       });
     },
   },

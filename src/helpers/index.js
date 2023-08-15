@@ -26,6 +26,12 @@ export const fetchItem = async ({ resources, collection, emoji, id }) => {
   }
 };
 
+export const fetchItems = ({ resources, collection, emoji, ids }) => {
+  return Promise.all(
+    ids.map((id) => fetchItem({ resources, collection, emoji, id }))
+  );
+};
+
 export const makeAppendChildToParent = ({ child, parent }) => {
   return (store, { childId, parentId }) => {
     const resource = findById(store[parent], parentId);

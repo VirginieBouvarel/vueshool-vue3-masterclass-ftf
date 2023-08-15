@@ -44,10 +44,9 @@ const thread = computed(() => {
 threadsStore.fetchThread({ id: props.id }).then(async () => {
   await usersStore.fetchUser({ id: thread.value.userId });
 
-  thread.value.posts.forEach(async (postId) => {
-    const post = await postsStore.fetchPost({ id: postId });
-    usersStore.fetchUser({ id: post.userId });
-  });
+  const posts = await postsStore.fetchPosts({ ids: thread.value.posts });
+  const usersIds = posts.map((post) => post.userId);
+  usersStore.fetchUsers({ ids: usersIds });
 });
 
 const threadPosts = computed(() =>

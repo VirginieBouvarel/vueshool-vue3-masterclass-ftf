@@ -1,4 +1,4 @@
-import { findById, fetchItem } from "@/helpers";
+import { findById, fetchItem, fetchItems } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -58,6 +58,14 @@ export const useUsersStore = defineStore("UsersStore", {
         collection: "users",
         emoji: "🙋",
         id,
+      });
+    },
+    fetchUsers({ ids }) {
+      return fetchItems({
+        resources: this.users,
+        collection: "users",
+        emoji: "🙋",
+        ids,
       });
     },
   },
