@@ -1,4 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
+import { fetchItems } from "@/helpers";
 
 export const useForumsStore = defineStore("ForumsStore", {
   state: () => {
@@ -7,7 +8,16 @@ export const useForumsStore = defineStore("ForumsStore", {
     };
   },
   getters: {},
-  actions: {},
+  actions: {
+    fetchForums({ ids }) {
+      return fetchItems({
+        resources: this.forums,
+        collection: "forums",
+        emoji: "🏁",
+        ids,
+      });
+    },
+  },
 });
 
 if (import.meta.hot) {
