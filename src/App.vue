@@ -3,7 +3,12 @@
 <template>
   <the-navbar />
   <div class="container">
-    <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <Suspense>
+        <component :is="Component"></component>
+        <template #fallback> Loading... </template>
+      </Suspense>
+    </router-view>
   </div>
 </template>
 
