@@ -7,6 +7,7 @@
         <div>
           <p>
             <router-link
+              v-if="thread.id"
               :to="{ name: 'ThreadShow', params: { id: thread.id } }"
             >
               {{ thread.title }}
@@ -54,8 +55,6 @@ const props = defineProps({
 });
 
 function userById(userId) {
-  return findById(users.value, userId);
+  return findById(users.value, userId) || {};
 }
 </script>
-
-<style lang="scss" scoped></style>

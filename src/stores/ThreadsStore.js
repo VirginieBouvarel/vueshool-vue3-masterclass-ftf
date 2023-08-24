@@ -20,7 +20,8 @@ export const useThreadsStore = defineStore("ThreadsStore", {
     thread: (state) => {
       return (id) => {
         const thread = findById(state.threads, id);
-        if (!thread) return null;
+        console.log("%c thread :", "color: yellow", thread);
+        if (!thread) return {};
         const usersStore = useUsersStore();
         return {
           ...thread,

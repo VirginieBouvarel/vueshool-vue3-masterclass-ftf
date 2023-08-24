@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import db from "@/config/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { upsert } from "@/helpers";
+import { upsert, fetchItem, fetchItems } from "@/helpers";
 
 export const useCategoriesStore = defineStore("CategoriesStore", {
   state: () => {
@@ -19,6 +19,22 @@ export const useCategoriesStore = defineStore("CategoriesStore", {
         const item = { id: doc.id, ...doc.data() };
         upsert(this.categories, item);
         return item;
+      });
+    },
+    fetchCategory({ id }) {
+      return fetchItem({
+        resources: this.categories,
+        collection: "categories",
+        emoji: "🏷",
+        id,
+      });
+    },
+    fetchCategories({ ids }) {
+      return fetchItems({
+        resources: this.categories,
+        collection: "categories",
+        emoji: "🏷",
+        ids,
       });
     },
   },
