@@ -21,7 +21,7 @@
 
 <script setup>
 import { findById } from "@/helpers";
-import { computed } from "vue";
+import { computed, onBeforeMount, watch } from "vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -34,52 +34,40 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-(async () => {
+// (async () => {
+//   const forum = await forumsStore.fetchForum({ id: props.id });
+//   const threads = await threadsStore.fetchThreads({ ids: forum.threads });
+//   await usersStore.fetchUsers({
+//     ids: threads.map((thread) => thread.userId),
+//   });
+// })();
+
+onBeforeMount(async () => {
   const forum = await forumsStore.fetchForum({ id: props.id });
   const threads = await threadsStore.fetchThreads({ ids: forum.threads });
   await usersStore.fetchUsers({
     ids: threads.map((thread) => thread.userId),
   });
-})();
+});
 
 const forum = computed(() => {
   const forum = findById(forumsStore.forums, props.id);
-  console.log("%c forum computed :", "color: yellow", forum);
   return forum;
 });
-
-// const threads = computed(() => {
-//   console.log("%c fire threads computed", "color: yellow");
-//   if (threadsStore.threads.length === 0) return [];
-//   if (forum.value.threads.length === 0) return [];
-//   const forumThreads = forum.value.threads;
-//   console.log("%c threads computed forum :", "color: yellow", forum);
-//   const threads = forumThreads.map((id) => {
-//     threadsStore.thread(id);
-//   });
-//   console.log("%c threads computed threads :", "color: yellow", threads);
-//   return threads;
-// });
 
 const threads = computed(() => {
   if (
     threadsStore.threads.length === 0 ||
     !forum.value ||
-    forum.value.threads === 0
+    forum.value.threads.length === 0
   )
     return [];
-  // return forum.value.threads.map((id) => {
-  //   threadsStore.thread(id);
-  // });
-  console.log("%c getThreads() :", "color: yellow", getThreads());
-  return getThreads();
+  return forum.value.threads.map((id) => {
+    return threadsStore.thread(id);
+  });
 });
 
-const getThreads = () => {
-  return Promise.all(
-    forum.value.threads.map((id) => {
-      threadsStore.thread(id);
-    })
-  );
-};
+watch(threads, (value) => {
+  console.log("%c threads :", "color: yellow", value);
+});
 </script>
