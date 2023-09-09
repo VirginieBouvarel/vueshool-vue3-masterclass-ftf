@@ -22,7 +22,6 @@
 <script setup>
 import { findById } from "@/helpers";
 import { computed } from "vue";
-// import { computed, watch } from "vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
