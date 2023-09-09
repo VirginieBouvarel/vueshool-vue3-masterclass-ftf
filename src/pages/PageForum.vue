@@ -35,12 +35,9 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-// console.log("%c top setup ", "color: yellow");
-
 (async () => {
   const forum = await forumsStore.fetchForum({ id: props.id });
   const threads = await threadsStore.fetchThreads({ ids: forum.threads });
-  // console.log("%c end fetchThreads from firebase", "color: yellow");
   await usersStore.fetchUsers({
     ids: threads.map((thread) => thread.userId),
   });
@@ -52,24 +49,15 @@ const forum = computed(() => {
 });
 
 const threads = computed(() => {
-  // console.log(
-  //   "%c in 'threads' computed threadsStore.threads log :",
-  //   "color: yellow",
-  //   threadsStore.threads
-  // );
   if (
     !forum.value ||
     forum.value.threads.length === 0 ||
-    threadsStore.threads.length === 0
-    // || threadsStore.threads.length < forum.value.threads.length
+    threadsStore.threads.length === 0 ||
+    threadsStore.threads.length < forum.value.threads.length
   )
     return [];
   return forum.value.threads.map((id) => {
     return threadsStore.thread(id);
   });
 });
-
-// watch(threads, (value) => {
-//   console.log("%c threads :", "color: yellow", value);
-// });
 </script>
