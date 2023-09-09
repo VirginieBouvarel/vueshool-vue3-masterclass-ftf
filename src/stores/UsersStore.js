@@ -67,6 +67,9 @@ export const useUsersStore = defineStore("UsersStore", {
         ids,
       });
     },
+    fetchAuthUser() {
+      return this.fetchUser({ id: this.authId });
+    },
   },
 });
 

@@ -1,5 +1,3 @@
-<script setup></script>
-
 <template>
   <the-navbar />
   <div class="container">
@@ -11,6 +9,13 @@
     </router-view>
   </div>
 </template>
+
+<script setup>
+import { useUsersStore } from "@/stores/UsersStore";
+const usersStore = useUsersStore();
+
+(async () => await usersStore.fetchAuthUser())();
+</script>
 
 <style>
 @import "assets/style.css";
