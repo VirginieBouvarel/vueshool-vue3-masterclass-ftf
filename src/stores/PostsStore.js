@@ -2,6 +2,14 @@ import { fetchItem, fetchItems, makeAppendChildToParent } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
+import db from "@/config/firebase";
+import {
+  doc,
+  collection,
+  writeBatch,
+  arrayUnion,
+  getDoc,
+} from "firebase/firestore";
 
 export const usePostsStore = defineStore("PostsStore", {
   state: () => {
@@ -11,16 +19,28 @@ export const usePostsStore = defineStore("PostsStore", {
   },
   getters: {},
   actions: {
-    createPost(post) {
+    async createPost(post) {
       const usersStore = useUsersStore();
       const threadsStore = useThreadsStore();
 
-      post.id = "ggqq" + Math.random();
       post.userId = usersStore.authUser.id;
       post.publishedAt = Math.floor(Date.now() / 1000);
-      this.posts.push(post);
+
+      const postRef = doc(collection(db, "posts"));
+      const threadRef = doc(db, "threads", post.threadId);
+
+      const batch = writeBatch(db);
+      batch.set(postRef, post);
+      batch.update(threadRef, {
+        posts: arrayUnion(postRef.id),
+        contributors: arrayUnion(post.userId),
+      });
+      await batch.commit();
+
+      const newPost = await getDoc(postRef);
+      this.posts.push({ ...newPost.data(), id: newPost.id });
       this.appendPostToThread(threadsStore, {
-        childId: post.id,
+        childId: newPost.id,
         parentId: post.threadId,
       });
       this.appendContributorToThread(threadsStore, {
