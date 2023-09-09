@@ -21,7 +21,8 @@
 
 <script setup>
 import { findById } from "@/helpers";
-import { computed, onBeforeMount, watch } from "vue";
+import { computed } from "vue";
+// import { computed, watch } from "vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -34,21 +35,16 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-// (async () => {
-//   const forum = await forumsStore.fetchForum({ id: props.id });
-//   const threads = await threadsStore.fetchThreads({ ids: forum.threads });
-//   await usersStore.fetchUsers({
-//     ids: threads.map((thread) => thread.userId),
-//   });
-// })();
+// console.log("%c top setup ", "color: yellow");
 
-onBeforeMount(async () => {
+(async () => {
   const forum = await forumsStore.fetchForum({ id: props.id });
   const threads = await threadsStore.fetchThreads({ ids: forum.threads });
+  // console.log("%c end fetchThreads from firebase", "color: yellow");
   await usersStore.fetchUsers({
     ids: threads.map((thread) => thread.userId),
   });
-});
+})();
 
 const forum = computed(() => {
   const forum = findById(forumsStore.forums, props.id);
@@ -56,10 +52,16 @@ const forum = computed(() => {
 });
 
 const threads = computed(() => {
+  // console.log(
+  //   "%c in 'threads' computed threadsStore.threads log :",
+  //   "color: yellow",
+  //   threadsStore.threads
+  // );
   if (
-    threadsStore.threads.length === 0 ||
     !forum.value ||
-    forum.value.threads.length === 0
+    forum.value.threads.length === 0 ||
+    threadsStore.threads.length === 0
+    // || threadsStore.threads.length < forum.value.threads.length
   )
     return [];
   return forum.value.threads.map((id) => {
@@ -67,7 +69,7 @@ const threads = computed(() => {
   });
 });
 
-watch(threads, (value) => {
-  console.log("%c threads :", "color: yellow", value);
-});
+// watch(threads, (value) => {
+//   console.log("%c threads :", "color: yellow", value);
+// });
 </script>
