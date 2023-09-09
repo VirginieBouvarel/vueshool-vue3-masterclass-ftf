@@ -35,6 +35,13 @@ export const fetchItems = ({ resources, collection, emoji, ids }) => {
 export const makeAppendChildToParent = ({ child, parent }) => {
   return (store, { childId, parentId }) => {
     const resource = findById(store[parent], parentId);
+
+    if (!resource) {
+      console.warn(
+        `Appending ${child} ${childId} to ${parent} ${parentId} failed because the parent didn't exist`
+      );
+      return;
+    }
     resource[child] = resource[child] || [];
 
     if (!resource[child].includes(childId)) {

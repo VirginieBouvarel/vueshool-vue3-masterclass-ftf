@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread && text" class="col-full push-top">
     <h1>
       Editing in <i>{{ thread.title }}</i>
     </h1>
@@ -22,13 +22,20 @@ const router = useRouter();
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 
+(async () => {
+  const thread = await threadsStore.fetchThread({ id: props.id });
+  postsStore.fetchPost({ id: thread.posts[0] });
+})();
+
 const props = defineProps({
   id: { type: String, required: true },
 });
 
 const thread = computed(() => findById(threadsStore.threads, props.id));
-const text = computed(() => findById(postsStore.posts, thread.value.posts[0]))
-  .value.text;
+const text = computed(() => {
+  const post = findById(postsStore.posts, thread.value.posts[0]);
+  return post ? post.text : "";
+});
 
 async function save({ title, text }) {
   const thread = await threadsStore.updateThread({

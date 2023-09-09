@@ -11,18 +11,25 @@ import { findById } from "@/helpers";
 import { computed } from "vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
-import { storeToRefs } from "pinia";
-const { categories } = storeToRefs(useCategoriesStore());
-const { forums } = storeToRefs(useForumsStore());
+const categoriesStores = useCategoriesStore();
+const forumsStores = useForumsStore();
 
 const props = defineProps({
   id: { type: String, required: true },
 });
 
-const category = computed(() => findById(categories, props.id));
+(async () => {
+  const category = await categoriesStores.fetchCategory({ id: props.id });
+  forumsStores.fetchForums({ ids: category.forums });
+})();
+
+const category = computed(
+  () => findById(categoriesStores.categories, props.id) || {}
+);
+
 function getForumsForCategory(category) {
-  return forums.filter((forum) => forum.categoryId === category.id);
+  return forumsStores.forums.filter(
+    (forum) => forum.categoryId === category.id
+  );
 }
 </script>
-
-<style lang="scss" scoped></style>
