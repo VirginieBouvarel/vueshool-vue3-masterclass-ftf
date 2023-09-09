@@ -1,4 +1,4 @@
-import { findById, fetchItem, fetchItems } from "@/helpers";
+import { findById, upsert, fetchItem, fetchItems } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -49,8 +49,7 @@ export const useUsersStore = defineStore("UsersStore", {
   },
   actions: {
     updateUser(user) {
-      const userIndex = this.users.findIndex((item) => item.id === user.id);
-      this.users[userIndex] = user;
+      upsert(this.users, user);
     },
     fetchUser({ id }) {
       return fetchItem({
