@@ -23,14 +23,16 @@
       </div>
 
       <div class="post-content">
-        <div>
-          <p>
+        <div class="col-full">
+          <PostEditor v-if="editing === post.id" :post="post" />
+          <p v-else>
             {{ post.text }}
           </p>
         </div>
       </div>
 
       <a
+        @click.prevent="toggleEditMode(post.id)"
         href="#"
         style="margin-left: auto; padding-left: 10px"
         class="link-unstyled"
@@ -47,6 +49,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
 
 const props = defineProps({
@@ -56,9 +59,15 @@ const props = defineProps({
   },
 });
 
+const editing = ref(null);
+
 function userById(userId) {
   const usersStore = useUsersStore();
   return usersStore.user(userId);
+}
+
+function toggleEditMode(id) {
+  editing.value = id === editing.value ? null : id;
 }
 </script>
 
