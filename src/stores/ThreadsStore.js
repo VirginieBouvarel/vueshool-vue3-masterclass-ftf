@@ -1,6 +1,7 @@
 import {
   findById,
   upsert,
+  docToResource,
   fetchItem,
   fetchItems,
   makeAppendChildToParent,
@@ -84,17 +85,30 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       postsStore.createPost({ text, threadId: newThread.id });
       return findById(this.threads, newThread.id);
     },
-    updateThread({ text, title, id }) {
-      const thread = findById(this.threads, id);
-      const newThread = { ...thread, title };
-      upsert(this.threads, newThread);
-
+    async updateThread({ text, title, id }) {
       const postsStore = usePostsStore();
-      const post = findById(postsStore.posts, thread.posts[0]);
-      const newPost = { ...post, text };
-      upsert(postsStore.posts, newPost);
 
-      return newThread;
+      const thread = findById(this.threads, id);
+      const post = findById(postsStore.posts, thread.posts[0]);
+
+      let newThread = { ...thread, title };
+      let newPost = { ...post, text };
+
+      const threadRef = doc(db, "threads", id);
+      const postRef = doc(db, "posts", post.id);
+
+      const batch = writeBatch(db);
+      batch.update(threadRef, newThread);
+      batch.update(postRef, newPost);
+      await batch.commit();
+
+      newThread = await getDoc(threadRef);
+      newPost = await getDoc(postRef);
+
+      upsert(this.threads, docToResource(newThread));
+      upsert(postsStore.posts, docToResource(newPost));
+
+      return docToResource(newThread);
     },
     appendThreadToForum: makeAppendChildToParent({
       child: "threads",

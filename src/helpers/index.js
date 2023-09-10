@@ -12,6 +12,11 @@ export const upsert = (resources, resource) => {
   isExisting ? (resources[index] = resource) : resources.push(resource);
 };
 
+export const docToResource = (doc) => {
+  if (typeof doc?.data !== "function") return doc;
+  return { ...doc.data(), id: doc.id };
+};
+
 export const fetchItem = async ({ resources, collection, emoji, id }) => {
   console.log("🔥", emoji, id);
   const docRef = doc(db, collection, id);
