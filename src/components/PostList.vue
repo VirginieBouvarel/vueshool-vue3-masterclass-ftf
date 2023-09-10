@@ -24,7 +24,11 @@
 
       <div class="post-content">
         <div class="col-full">
-          <PostEditor v-if="editing === post.id" :post="post" />
+          <PostEditor
+            v-if="editing === post.id"
+            :post="post"
+            @save="handleUpdate"
+          />
           <p v-else>
             {{ post.text }}
           </p>
@@ -32,6 +36,7 @@
       </div>
 
       <a
+        v-if="post.userId === usersStore.authUser.id"
         @click.prevent="toggleEditMode(post.id)"
         href="#"
         style="margin-left: auto; padding-left: 10px"
@@ -42,6 +47,7 @@
       </a>
 
       <div class="post-date text-faded">
+        <div v-if="post.edited?.at" class="edition-info">edited</div>
         <AppDate :timestamp="post.publishedAt" />
       </div>
     </div>
@@ -51,6 +57,8 @@
 <script setup>
 import { ref } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
+import { usePostsStore } from "@/stores/PostsStore";
+const usersStore = useUsersStore();
 
 const props = defineProps({
   posts: {
@@ -62,12 +70,17 @@ const props = defineProps({
 const editing = ref(null);
 
 function userById(userId) {
-  const usersStore = useUsersStore();
   return usersStore.user(userId);
 }
 
 function toggleEditMode(id) {
   editing.value = id === editing.value ? null : id;
+}
+
+function handleUpdate(event) {
+  const postsStore = usePostsStore();
+  postsStore.updatePost(event.post);
+  editing.value = null;
 }
 </script>
 

@@ -1,4 +1,10 @@
-import { fetchItem, fetchItems, makeAppendChildToParent } from "@/helpers";
+import {
+  upsert,
+  docToResource,
+  fetchItem,
+  fetchItems,
+  makeAppendChildToParent,
+} from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -10,6 +16,7 @@ import {
   arrayUnion,
   getDoc,
   increment,
+  serverTimestamp,
 } from "firebase/firestore";
 
 export const usePostsStore = defineStore("PostsStore", {
@@ -51,6 +58,24 @@ export const usePostsStore = defineStore("PostsStore", {
         childId: post.userId,
         parentId: post.threadId,
       });
+    },
+    async updatePost({ text, id }) {
+      const usersStore = useUsersStore();
+      const post = {
+        text,
+        edited: {
+          at: serverTimestamp(),
+          by: usersStore.authUser.id,
+          moderated: false,
+        },
+      };
+      const postRef = doc(db, "posts", id);
+      const batch = writeBatch(db);
+      batch.update(postRef, post);
+      await batch.commit();
+
+      const updatedPost = await getDoc(postRef);
+      upsert(this.posts, docToResource(updatedPost));
     },
     appendPostToThread: makeAppendChildToParent({
       child: "posts",
