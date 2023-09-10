@@ -20,25 +20,20 @@ export const useUsersStore = defineStore("UsersStore", {
         const threadsStore = useThreadsStore();
 
         return {
-          // authUser
           ...user,
-          // authUser.posts
           get posts() {
             return postsStore.posts.filter((post) => post.userId === user.id);
           },
-          // authUser.postsCount
           get postsCount() {
-            return this.posts.length;
+            return user.postsCount || 0;
           },
-          // authUser.posts
           get threads() {
             return threadsStore.threads.filter(
               (thread) => thread.userId === user.id
             );
           },
-          // authUser.posts
           get threadsCount() {
-            return this.threads.length;
+            return user.threads?.length || 0;
           },
         };
       };
