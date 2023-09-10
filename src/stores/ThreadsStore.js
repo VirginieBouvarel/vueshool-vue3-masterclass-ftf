@@ -9,6 +9,14 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import db from "@/config/firebase";
+import {
+  doc,
+  collection,
+  writeBatch,
+  arrayUnion,
+  getDoc,
+} from "firebase/firestore";
 
 export const useThreadsStore = defineStore("ThreadsStore", {
   state: () => {
@@ -28,10 +36,10 @@ export const useThreadsStore = defineStore("ThreadsStore", {
             return findById(usersStore.users, thread.userId);
           },
           get repliesCount() {
-            return thread.posts.length - 1;
+            return thread.posts?.length - 1 || 0;
           },
           get contributorsCount() {
-            return thread.contributors.length;
+            return thread.contributors?.length - 1 || 0;
           },
         };
       };
@@ -43,17 +51,38 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       const forumsStore = useForumsStore();
       const postsStore = usePostsStore();
 
-      const id = "ggqq" + Math.random();
       const userId = usersStore.authUser.id;
       const publishedAt = Math.floor(Date.now() / 1000);
-      const thread = { forumId, title, publishedAt, userId, id };
-      upsert(this.threads, thread);
 
-      this.appendThreadToForum(forumsStore, { childId: id, parentId: forumId });
-      this.appendThreadToUser(usersStore, { childId: id, parentId: userId });
-      postsStore.createPost({ text, threadId: id });
+      const threadRef = doc(collection(db, "threads"));
+      const userRef = doc(db, "users", userId);
+      const forumRef = doc(db, "forums", forumId);
 
-      return findById(this.threads, id);
+      const thread = { forumId, title, publishedAt, userId, id: threadRef.id };
+
+      const batch = writeBatch(db);
+      batch.set(threadRef, thread);
+      batch.update(userRef, {
+        threads: arrayUnion(threadRef.id),
+      });
+      batch.update(forumRef, {
+        threads: arrayUnion(threadRef.id),
+      });
+      await batch.commit();
+
+      const newThread = await getDoc(threadRef);
+
+      upsert(this.threads, { ...newThread.data(), id: newThread.id });
+      this.appendThreadToForum(forumsStore, {
+        childId: newThread.id,
+        parentId: forumId,
+      });
+      this.appendThreadToUser(usersStore, {
+        childId: newThread.id,
+        parentId: userId,
+      });
+      postsStore.createPost({ text, threadId: newThread.id });
+      return findById(this.threads, newThread.id);
     },
     updateThread({ text, title, id }) {
       const thread = findById(this.threads, id);
