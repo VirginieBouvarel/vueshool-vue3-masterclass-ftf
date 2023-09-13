@@ -1,14 +1,16 @@
 <template>
-  <div v-if="thread && text" class="col-full push-top">
-    <h1>
-      Editing in <i>{{ thread.title }}</i>
-    </h1>
-    <ThreadEditor
-      :title="thread.title"
-      :text="text"
-      @save="save"
-      @cancel="cancel"
-    />
+  <div v-if="ready" class="container col-full">
+    <div v-if="thread && text" class="col-full push-top">
+      <h1>
+        Editing in <i>{{ thread.title }}</i>
+      </h1>
+      <ThreadEditor
+        :title="thread.title"
+        :text="text"
+        @save="save"
+        @cancel="cancel"
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -17,19 +19,20 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import { useAsyncDataStatus } from "@/composables/asyncDataStatus";
 
 const router = useRouter();
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
-
-(async () => {
-  const thread = await threadsStore.fetchThread({ id: props.id });
-  postsStore.fetchPost({ id: thread.posts[0] });
-})();
+const { ready, setReadyStatus } = useAsyncDataStatus();
 
 const props = defineProps({
   id: { type: String, required: true },
 });
+
+const threadData = await threadsStore.fetchThread({ id: props.id });
+await postsStore.fetchPost({ id: threadData.posts[0] });
+setReadyStatus();
 
 const thread = computed(() => findById(threadsStore.threads, props.id));
 const text = computed(() => {

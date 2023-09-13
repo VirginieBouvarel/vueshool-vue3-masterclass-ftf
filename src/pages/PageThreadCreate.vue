@@ -1,9 +1,11 @@
 <template>
-  <div v-if="forum" class="col-full push-top">
-    <h1>
-      Create new thread in <i>{{ forum.name }}</i>
-    </h1>
-    <ThreadEditor @save="save" @cancel="cancel" />
+  <div v-if="ready" class="container col-full">
+    <div v-if="forum" class="col-full push-top">
+      <h1>
+        Create new thread in <i>{{ forum.name }}</i>
+      </h1>
+      <ThreadEditor @save="save" @cancel="cancel" />
+    </div>
   </div>
 </template>
 <script setup>
@@ -12,16 +14,19 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useForumsStore } from "@/stores/ForumsStore";
+import { useAsyncDataStatus } from "@/composables/asyncDataStatus";
 
 const router = useRouter();
 const threadsStore = useThreadsStore();
 const forumsStore = useForumsStore();
+const { ready, setReadyStatus } = useAsyncDataStatus();
 
 const props = defineProps({
   forumId: { type: String, required: true },
 });
 
 await forumsStore.fetchForum({ id: props.forumId });
+setReadyStatus();
 
 const forum = computed(() => findById(forumsStore.forums, props.forumId));
 

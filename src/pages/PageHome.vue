@@ -6,22 +6,22 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
+import { useAsyncDataStatus } from "@/composables/asyncDataStatus";
+
 const categoriesStore = useCategoriesStore();
 const forumsStore = useForumsStore();
 
-const ready = ref(false);
+const { ready, setReadyStatus } = useAsyncDataStatus();
+
+const categoriesData = await categoriesStore.fetchAllCategories();
+const forumsIds = categoriesData.map((category) => category.forums).flat();
+await forumsStore.fetchForums({ ids: forumsIds });
+setReadyStatus();
 
 const categories = computed(() => {
   return categoriesStore.categories;
 });
-
-(async () => {
-  await categoriesStore.fetchAllCategories();
-  const forumsIds = categories.value.map((category) => category.forums).flat();
-  await forumsStore.fetchForums({ ids: forumsIds });
-  ready.value = true;
-})();
 </script>
