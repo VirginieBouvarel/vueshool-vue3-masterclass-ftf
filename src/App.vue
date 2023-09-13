@@ -2,10 +2,12 @@
   <the-navbar />
   <div class="container">
     <router-view v-slot="{ Component }">
-      <Suspense>
-        <component :is="Component"></component>
-        <template #fallback> Loading... </template>
-      </Suspense>
+      <template v-if="Component">
+        <Suspense>
+          <component :is="Component"></component>
+          <template #fallback> Loading... </template>
+        </Suspense>
+      </template>
     </router-view>
   </div>
 </template>

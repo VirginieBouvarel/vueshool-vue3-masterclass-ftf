@@ -1,27 +1,25 @@
 <template>
-  <div v-if="ready" class="container col-full">
-    <div v-if="thread" class="col-large push-top">
-      <h1>
-        {{ thread.title }}
-        <router-link :to="{ name: 'ThreadEdit', id: props.id }">
-          <button class="btn-green btn-small">Edit Thread</button>
-        </router-link>
-      </h1>
-      <p>
-        By <a href="#" class="link-unstyled">{{ thread.author?.name }}</a> ,
-        <AppDate :timestamp="thread.publishedAt" />.
-        <span
-          style="float: right; margin-top: 2px"
-          class="hide-mobile text-faded text-small"
-        >
-          {{ thread.repliesCount }} replies by
-          {{ thread.contributorsCount }} contributors
-        </span>
-      </p>
+  <div v-if="thread" class="col-large push-top">
+    <h1>
+      {{ thread.title }}
+      <router-link :to="{ name: 'ThreadEdit', id: props.id }">
+        <button class="btn-green btn-small">Edit Thread</button>
+      </router-link>
+    </h1>
+    <p>
+      By <a href="#" class="link-unstyled">{{ thread.author?.name }}</a> ,
+      <AppDate :timestamp="thread.publishedAt" />.
+      <span
+        style="float: right; margin-top: 2px"
+        class="hide-mobile text-faded text-small"
+      >
+        {{ thread.repliesCount }} replies by
+        {{ thread.contributorsCount }} contributors
+      </span>
+    </p>
 
-      <post-list :posts="threadPosts" />
-      <post-editor @save="addPost" />
-    </div>
+    <post-list :posts="threadPosts" />
+    <post-editor @save="addPost" />
   </div>
 </template>
 
@@ -30,12 +28,10 @@ import { computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useUsersStore } from "@/stores/UsersStore";
-import { useAsyncDataStatus } from "@/composables/asyncDataStatus";
 
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 const usersStore = useUsersStore();
-const { ready, setReadyStatus } = useAsyncDataStatus();
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -45,7 +41,6 @@ const threadData = await threadsStore.fetchThread({ id: props.id });
 const posts = await postsStore.fetchPosts({ ids: threadData.posts });
 const usersIds = posts.map((post) => post.userId).concat(threadData.userId);
 await usersStore.fetchUsers({ ids: usersIds });
-setReadyStatus();
 
 const thread = computed(() => {
   return threadsStore.thread(props.id);
