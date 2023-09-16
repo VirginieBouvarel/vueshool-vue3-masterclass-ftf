@@ -5,7 +5,9 @@
       <template v-if="Component">
         <Suspense>
           <component :is="Component"></component>
-          <template #fallback> Loading... </template>
+          <template #fallback>
+            <AppSpinner />
+          </template>
         </Suspense>
       </template>
     </router-view>
