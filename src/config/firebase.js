@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const config = {
-  apiKey: "AIzaSyBoYfmFTCmKzagOsF52FN6ZFWroDTH24YE",
-  authDomain: "vue-school-forum-f7658.firebaseapp.com",
-  projectId: "vue-school-forum-f7658",
-  storageBucket: "vue-school-forum-f7658.appspot.com",
-  messagingSenderId: "559706452594",
-  appId: "1:559706452594:web:5b9a5f34def3ce07d488eb",
-  databaseURL: "https://vue-school-forum-f7658-default-rtdb.firebaseio.com",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
 };
 
 const app = initializeApp(config);
