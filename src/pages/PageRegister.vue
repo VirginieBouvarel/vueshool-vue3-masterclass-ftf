@@ -63,6 +63,11 @@
 </template>
 <script setup>
 import { reactive } from "vue";
+import { useRouter } from "vue-router";
+import { useUsersStore } from "@/stores/UsersStore";
+
+const router = useRouter();
+const usersStore = useUsersStore();
 
 const form = reactive({
   name: "",
@@ -73,6 +78,7 @@ const form = reactive({
 });
 
 function register() {
-  console.log("submitting form", form);
+  usersStore.createUser(form);
+  router.push({ name: "Home" });
 }
 </script>

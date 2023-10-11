@@ -1,7 +1,20 @@
-import { findById, upsert, fetchItem, fetchItems } from "@/helpers";
+import {
+  findById,
+  upsert,
+  fetchItem,
+  fetchItems,
+  docToResource,
+} from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
+import db from "@/config/firebase";
+import {
+  addDoc,
+  getDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore";
 
 export const useUsersStore = defineStore("UsersStore", {
   state: () => {
@@ -64,6 +77,23 @@ export const useUsersStore = defineStore("UsersStore", {
     },
     fetchAuthUser() {
       return this.fetchUser({ id: this.authId });
+    },
+    async createUser({ avatar = null, email, name, username }) {
+      const registeredAt = serverTimestamp();
+      const usernameLower = username.toLowerCase();
+      const emailLower = email.toLowerCase();
+      const user = {
+        avatar,
+        email: emailLower,
+        name,
+        username,
+        usernameLower,
+        registeredAt,
+      };
+      const userRef = await addDoc(collection(db, "users"), user);
+      const newUser = await getDoc(userRef);
+      this.users.push({ ...newUser.data(), id: newUser.id });
+      return docToResource(newUser);
     },
   },
 });
