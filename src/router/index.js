@@ -9,6 +9,7 @@ import PageThreadShow from "@/pages/PageThreadShow.vue";
 import PageThreadCreate from "@/pages/PageThreadCreate.vue";
 import PageThreadEdit from "@/pages/PageThreadEdit.vue";
 import PageProfile from "@/pages/PageProfile.vue";
+import PageRegister from "@/pages/PageRegister.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 
 const router = createRouter({
@@ -74,6 +75,11 @@ const router = createRouter({
       name: "ThreadEdit",
       component: PageThreadEdit,
       props: true,
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: PageRegister,
     },
     {
       path: "/:pathMatch(.*)*",
