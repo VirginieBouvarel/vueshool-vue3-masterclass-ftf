@@ -78,7 +78,7 @@ const form = reactive({
 });
 
 function register() {
-  usersStore.createUser(form);
+  usersStore.registerUserWithEmailAndPassword(form);
   router.push({ name: "Home" });
 }
 </script>

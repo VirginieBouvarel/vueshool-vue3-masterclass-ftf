@@ -9,18 +9,15 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import db from "@/config/firebase";
-import {
-  addDoc,
-  getDoc,
-  collection,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 export const useUsersStore = defineStore("UsersStore", {
   state: () => {
     return {
       users: [],
       authId: "VXjpr2WHa8Ux4Bnggym8QFLdv5C3",
+      auth: null,
     };
   },
   getters: {
@@ -78,7 +75,22 @@ export const useUsersStore = defineStore("UsersStore", {
     fetchAuthUser() {
       return this.fetchUser({ id: this.authId });
     },
-    async createUser({ avatar = null, email, name, username }) {
+    async registerUserWithEmailAndPassword({
+      email,
+      name,
+      username,
+      password,
+      avatar = null,
+    }) {
+      const auth = getAuth();
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      this.createUser({ id: user.uid, email, name, username, avatar });
+    },
+    async createUser({ id, email, name, username, avatar = null }) {
       const registeredAt = serverTimestamp();
       const usernameLower = username.toLowerCase();
       const emailLower = email.toLowerCase();
@@ -90,7 +102,8 @@ export const useUsersStore = defineStore("UsersStore", {
         usernameLower,
         registeredAt,
       };
-      const userRef = await addDoc(collection(db, "users"), user);
+      const userRef = doc(db, "users", id);
+      await setDoc(userRef, user);
       const newUser = await getDoc(userRef);
       this.users.push({ ...newUser.data(), id: newUser.id });
       return docToResource(newUser);
