@@ -18,7 +18,7 @@
 import { useUsersStore } from "@/stores/UsersStore";
 const usersStore = useUsersStore();
 
-(async () => await usersStore.fetchAuthUser())();
+(async () => await usersStore.listenAuthStateChanges())();
 </script>
 
 <style>

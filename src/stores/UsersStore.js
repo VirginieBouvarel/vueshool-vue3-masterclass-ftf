@@ -10,13 +10,17 @@ import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import db from "@/config/firebase";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
 export const useUsersStore = defineStore("UsersStore", {
   state: () => {
     return {
       users: [],
-      authId: "VXjpr2WHa8Ux4Bnggym8QFLdv5C3",
+      authId: null,
       auth: null,
     };
   },
@@ -53,9 +57,6 @@ export const useUsersStore = defineStore("UsersStore", {
     },
   },
   actions: {
-    updateUser(user) {
-      upsert(this.users, user);
-    },
     fetchUser({ id }) {
       return fetchItem({
         resources: this.users,
@@ -73,7 +74,19 @@ export const useUsersStore = defineStore("UsersStore", {
       });
     },
     fetchAuthUser() {
-      return this.fetchUser({ id: this.authId });
+      const auth = getAuth();
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+      this.authId = userId;
+      return this.fetchUser({ id: userId });
+    },
+    async listenAuthStateChanges() {
+      const auth = getAuth();
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          await this.fetchAuthUser();
+        }
+      });
     },
     async registerUserWithEmailAndPassword({
       email,
@@ -107,6 +120,9 @@ export const useUsersStore = defineStore("UsersStore", {
       const newUser = await getDoc(userRef);
       this.users.push({ ...newUser.data(), id: newUser.id });
       return docToResource(newUser);
+    },
+    updateUser(user) {
+      upsert(this.users, user);
     },
   },
 });
