@@ -14,6 +14,8 @@ import {
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 
 export const useUsersStore = defineStore("UsersStore", {
@@ -102,6 +104,15 @@ export const useUsersStore = defineStore("UsersStore", {
         password
       );
       this.createUser({ id: user.uid, email, name, username, avatar });
+    },
+    async signInWithEmailAndPassword({ email, password }) {
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, email, password);
+    },
+    async signOut() {
+      const auth = getAuth();
+      await signOut(auth);
+      this.authId = null;
     },
     async createUser({ id, email, name, username, avatar = null }) {
       const registeredAt = serverTimestamp();

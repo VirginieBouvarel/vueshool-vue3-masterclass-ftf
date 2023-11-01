@@ -52,6 +52,15 @@
             </ul>
           </div>
         </li>
+        <li v-if="authUser" class="navbar-item">
+          <a @click.prevent="usersStore.signOut">Sign Out</a>
+        </li>
+        <li v-if="!authUser" class="navbar-item">
+          <router-link :to="{ name: 'SignIn' }">Sign In</router-link>
+        </li>
+        <li v-if="!authUser" class="navbar-item">
+          <router-link :to="{ name: 'Register' }">Register</router-link>
+        </li>
       </ul>
     </nav>
   </header>
@@ -60,5 +69,7 @@
 <script setup>
 import { useUsersStore } from "@/stores/UsersStore";
 import { storeToRefs } from "pinia";
+
+const usersStore = useUsersStore();
 const { authUser } = storeToRefs(useUsersStore());
 </script>

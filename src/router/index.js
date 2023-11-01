@@ -10,6 +10,7 @@ import PageThreadCreate from "@/pages/PageThreadCreate.vue";
 import PageThreadEdit from "@/pages/PageThreadEdit.vue";
 import PageProfile from "@/pages/PageProfile.vue";
 import PageRegister from "@/pages/PageRegister.vue";
+import PageSignIn from "@/pages/PageSignIn.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 
 const router = createRouter({
@@ -80,6 +81,11 @@ const router = createRouter({
       path: "/register",
       name: "Register",
       component: PageRegister,
+    },
+    {
+      path: "/signin",
+      name: "SignIn",
+      component: PageSignIn,
     },
     {
       path: "/:pathMatch(.*)*",
