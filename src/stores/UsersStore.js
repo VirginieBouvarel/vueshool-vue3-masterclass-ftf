@@ -16,6 +16,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 export const useUsersStore = defineStore("UsersStore", {
@@ -109,12 +111,46 @@ export const useUsersStore = defineStore("UsersStore", {
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, password);
     },
+    async signInWithGoogle() {
+      console.log("%c signInWithGoogle", "color: yellow");
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth();
+      try {
+        const { user } = await signInWithPopup(auth, provider);
+        console.log("%c user :", "color: yellow", user);
+
+        const userRef = doc(db, "users", user.uid);
+        console.log("%c userRef :", "color: yellow", userRef);
+
+        const userDoc = await getDoc(userRef);
+        console.log("%c userDoc :", "color: yellow", userDoc);
+
+        if (!userDoc.exists()) {
+          this.createUser({
+            id: user.uid,
+            name: user.displayName,
+            email: user.email,
+            username: user.email,
+            avatar: user.photoURL,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async signOut() {
       const auth = getAuth();
       await signOut(auth);
       this.authId = null;
     },
     async createUser({ id, email, name, username, avatar = null }) {
+      console.log("%c createUser :", "color: yellow", {
+        id,
+        email,
+        name,
+        username,
+        avatar,
+      });
       const registeredAt = serverTimestamp();
       const usernameLower = username.toLowerCase();
       const emailLower = email.toLowerCase();
@@ -126,6 +162,8 @@ export const useUsersStore = defineStore("UsersStore", {
         usernameLower,
         registeredAt,
       };
+      console.log("%c user :", "color: yellow", user);
+
       const userRef = doc(db, "users", id);
       await setDoc(userRef, user);
       const newUser = await getDoc(userRef);

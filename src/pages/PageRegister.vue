@@ -54,7 +54,7 @@
         </div>
       </form>
       <div class="text-center push-top">
-        <button class="btn-red btn-xsmall">
+        <button @click="registerWithGoogle" class="btn-red btn-xsmall">
           <i class="fa fa-google fa-btn"></i>Sign up with Google
         </button>
       </div>
@@ -77,8 +77,12 @@ const form = reactive({
   avatar: "",
 });
 
-function register() {
-  usersStore.registerUserWithEmailAndPassword(form);
+async function register() {
+  await usersStore.registerUserWithEmailAndPassword(form);
+  router.push({ name: "Home" });
+}
+async function registerWithGoogle() {
+  await usersStore.signInWithGoogle();
   router.push({ name: "Home" });
 }
 </script>
