@@ -57,7 +57,6 @@ const form = reactive({
 });
 
 async function signIn() {
-  console.log("%c signIn", "color: yellow");
   try {
     await usersStore.signInWithEmailAndPassword({ ...form });
     router.push("/");

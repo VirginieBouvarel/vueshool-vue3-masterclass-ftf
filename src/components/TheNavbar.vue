@@ -20,8 +20,9 @@
     <nav class="navbar">
       <ul>
         <li v-if="authUser" class="navbar-user">
-          <router-link :to="{ name: 'Profile' }">
+          <a @click.prevent="userDropdownOpen = !userDropdownOpen">
             <img
+              v-show="authUser.avatar"
               class="avatar-small"
               :src="authUser.avatar"
               :alt="`${authUser.name} profile picture`"
@@ -38,22 +39,23 @@
                 height="15"
               />
             </span>
-          </router-link>
+          </a>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-          <div id="user-dropdown">
+          <div id="user-dropdown" :class="{ 'active-drop': userDropdownOpen }">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
               <li class="dropdown-menu-item">
-                <a href="profile.html">View profile</a>
+                <router-link :to="{ name: 'Profile' }">
+                  View profile
+                </router-link>
               </li>
-              <li class="dropdown-menu-item"><a href="#">Log out</a></li>
+              <li class="dropdown-menu-item">
+                <a @click.prevent="usersStore.signOut">Sign Out</a>
+              </li>
             </ul>
           </div>
-        </li>
-        <li v-if="authUser" class="navbar-item">
-          <a @click.prevent="usersStore.signOut">Sign Out</a>
         </li>
         <li v-if="!authUser" class="navbar-item">
           <router-link :to="{ name: 'SignIn' }">Sign In</router-link>
@@ -67,9 +69,12 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
 import { storeToRefs } from "pinia";
 
 const usersStore = useUsersStore();
 const { authUser } = storeToRefs(useUsersStore());
+
+const userDropdownOpen = ref(false);
 </script>
