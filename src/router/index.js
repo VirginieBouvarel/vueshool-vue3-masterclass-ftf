@@ -26,11 +26,7 @@ const router = createRouter({
       path: "/me",
       name: "Profile",
       component: PageProfile,
-      meta: { toTop: true, smoothScroll: true },
-      beforeEnter(_to, _from, next) {
-        const usersStore = useUsersStore();
-        if (!usersStore.authId) return next({ name: "Home" });
-      },
+      meta: { toTop: true, smoothScroll: true, requiresAuth: true },
     },
     {
       path: "/me/edit",
@@ -113,6 +109,12 @@ const router = createRouter({
     if (to.meta.smoothScroll) scroll.behavior = "smooth";
     return scroll;
   },
+});
+
+router.beforeEach((to, from) => {
+  console.log(`🚦 Navigating from ${from.name} to ${to.name} `);
+  const usersStore = useUsersStore();
+  if (to.meta.requiresAuth && !usersStore.authId) return { name: "Home" };
 });
 
 export default router;

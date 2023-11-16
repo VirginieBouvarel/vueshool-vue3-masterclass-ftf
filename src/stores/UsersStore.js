@@ -24,8 +24,8 @@ export const useUsersStore = defineStore("UsersStore", {
   state: () => {
     return {
       users: [],
-      // authId: null,
-      authId: "oppNjkELJiWKrvx6oT6DOcxCE1C3",
+      authId: null,
+      // authId: "oppNjkELJiWKrvx6oT6DOcxCE1C3",
       auth: null,
     };
   },

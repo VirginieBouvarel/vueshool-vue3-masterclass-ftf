@@ -50,8 +50,10 @@ const threadPosts = computed(() =>
   postsStore.posts.filter((post) => post.threadId === props.id)
 );
 
-function addPost(event) {
+async function addPost(event) {
   const post = { ...event.post, threadId: props.id };
-  postsStore.createPost(post);
+  await postsStore.createPost(post);
+  // Pour que user.postsCount soit mis à jour sans avoir à recharger la page
+  await usersStore.fetchUser({ id: post.userId });
 }
 </script>

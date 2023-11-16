@@ -69,7 +69,7 @@ const props = defineProps({
 
 const editing = ref(null);
 
-async function userById(userId) {
+function userById(userId) {
   return usersStore.user(userId);
 }
 
@@ -83,5 +83,3 @@ function handleUpdate(event) {
   editing.value = null;
 }
 </script>
-
-<style lang="scss" scoped></style>
