@@ -93,6 +93,15 @@ const router = createRouter({
       component: PageSignIn,
     },
     {
+      path: "/signout",
+      name: "SignOut",
+      async beforeEnter(_to, _from, next) {
+        const usersStore = useUsersStore();
+        await usersStore.signOut();
+        return next({ name: "Home" });
+      },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: PageNotFound,
