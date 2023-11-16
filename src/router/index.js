@@ -1,6 +1,7 @@
 // import { findById } from "@/helpers";
 import { createRouter, createWebHistory } from "vue-router";
 // import { useThreadsStore } from "@/stores/ThreadsStore";
+import { useUsersStore } from "@/stores/UsersStore";
 
 import PageHome from "@/pages/PageHome.vue";
 import PageForum from "@/pages/PageForum.vue";
@@ -26,6 +27,10 @@ const router = createRouter({
       name: "Profile",
       component: PageProfile,
       meta: { toTop: true, smoothScroll: true },
+      beforeEnter(_to, _from, next) {
+        const usersStore = useUsersStore();
+        if (!usersStore.authId) return next({ name: "Home" });
+      },
     },
     {
       path: "/me/edit",

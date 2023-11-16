@@ -69,7 +69,7 @@ const props = defineProps({
 
 const editing = ref(null);
 
-function userById(userId) {
+async function userById(userId) {
   return usersStore.user(userId);
 }
 

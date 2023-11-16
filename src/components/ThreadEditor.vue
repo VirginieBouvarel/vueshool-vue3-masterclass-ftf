@@ -35,25 +35,36 @@
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed, watch } from "vue";
 
 const props = defineProps({
   title: { type: String, default: "" },
   text: { type: String, default: "" },
 });
 
-const emit = defineEmits(["save", "cancel"]);
+const emit = defineEmits(["dirty", "clean", "save", "cancel"]);
 
 const form = reactive({
   title: props.title,
   text: props.text,
 });
 
+watch(
+  () => form,
+  (newValue) => {
+    if (newValue.title !== props.title || newValue.text !== props.text) {
+      emit("dirty");
+      return;
+    }
+    emit("clean");
+  },
+  { deep: true }
+);
+
 const existing = computed(() => !!props.title);
 
 function save() {
+  emit("clean");
   emit("save", { ...form });
 }
 </script>
-
-<style lang="scss" scoped></style>

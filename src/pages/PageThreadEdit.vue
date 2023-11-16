@@ -8,13 +8,15 @@
       :text="text"
       @save="save"
       @cancel="cancel"
+      @dirty="formIsDirty = true"
+      @clean="formIsDirty = false"
     />
   </div>
 </template>
 <script setup>
 import { findById } from "@/helpers";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 
@@ -25,6 +27,8 @@ const postsStore = usePostsStore();
 const props = defineProps({
   id: { type: String, required: true },
 });
+
+const formIsDirty = ref(false);
 
 const threadData = await threadsStore.fetchThread({ id: props.id });
 await postsStore.fetchPost({ id: threadData.posts[0] });
@@ -47,4 +51,13 @@ async function save({ title, text }) {
 function cancel() {
   router.push({ name: "ThreadShow", params: { id: props.id } });
 }
+
+onBeforeRouteLeave(() => {
+  if (formIsDirty.value) {
+    const confirmed = window.confirm(
+      "Are you sure you want to leave? Unsaved changes will be lost!"
+    );
+    if (!confirmed) return false;
+  }
+});
 </script>
