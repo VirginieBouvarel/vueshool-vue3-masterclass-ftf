@@ -47,6 +47,22 @@ export const useThreadsStore = defineStore("ThreadsStore", {
     },
   },
   actions: {
+    fetchThread({ id }) {
+      return fetchItem({
+        resources: this.threads,
+        collection: "threads",
+        emoji: "📄",
+        id,
+      });
+    },
+    fetchThreads({ ids }) {
+      return fetchItems({
+        resources: this.threads,
+        collection: "threads",
+        emoji: "📄",
+        ids,
+      });
+    },
     async createThread({ text, title, forumId }) {
       const usersStore = useUsersStore();
       const forumsStore = useForumsStore();
@@ -118,22 +134,6 @@ export const useThreadsStore = defineStore("ThreadsStore", {
       child: "threads",
       parent: "users",
     }),
-    fetchThread({ id }) {
-      return fetchItem({
-        resources: this.threads,
-        collection: "threads",
-        emoji: "📄",
-        id,
-      });
-    },
-    fetchThreads({ ids }) {
-      return fetchItems({
-        resources: this.threads,
-        collection: "threads",
-        emoji: "📄",
-        ids,
-      });
-    },
   },
 });
 
