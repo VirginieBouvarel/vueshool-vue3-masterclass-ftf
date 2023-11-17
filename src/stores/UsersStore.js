@@ -86,6 +86,7 @@ export const useUsersStore = defineStore("UsersStore", {
       return this.fetchUser({ id: userId });
     },
     async listenAuthStateChanges() {
+      console.log("%c 👂listenAuthStateChanges", "color: yellow");
       const auth = getAuth();
       onAuthStateChanged(auth, async (user) => {
         if (user) {
