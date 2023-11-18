@@ -90,7 +90,7 @@ export const useUsersStore = defineStore("UsersStore", {
       const auth = getAuth();
       return new Promise((resolve) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-          console.log("👣 the user has changed");
+          console.log("👣 the auth state has changed");
           if (user) {
             await this.fetchAuthUser();
             resolve(user);

@@ -122,7 +122,9 @@ router.beforeEach(async (to, from) => {
   await usersStore.initAuthentication();
 
   console.log(`🚦 Navigating from ${from.name} to ${to.name} `);
-  if (to.meta.requiresAuth && !usersStore.authId) return { name: "SignIn" };
+  if (to.meta.requiresAuth && !usersStore.authId) {
+    return { name: "SignIn", query: { redirectTo: to.path } };
+  }
   if (to.meta.requiresGuest && usersStore.authId) return { name: "Home" };
 });
 

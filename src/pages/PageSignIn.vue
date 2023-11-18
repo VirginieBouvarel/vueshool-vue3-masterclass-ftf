@@ -46,9 +46,10 @@
 <script setup>
 import { reactive } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const usersStore = useUsersStore();
+const route = useRoute();
 const router = useRouter();
 
 const form = reactive({
@@ -59,13 +60,19 @@ const form = reactive({
 async function signIn() {
   try {
     await usersStore.signInWithEmailAndPassword({ ...form });
-    router.push({ name: "Home" });
+    successRedirect();
   } catch (error) {
     alert(error.message);
   }
 }
 async function signInWithGoogle() {
   await usersStore.signInWithGoogle();
-  router.push({ name: "Home" });
+  successRedirect();
+}
+
+function successRedirect() {
+  console.log("%c redirecting", "color: yellow");
+  const redirectTo = route.query.redirectTo || { name: "Home" };
+  router.push(redirectTo);
 }
 </script>
