@@ -33,6 +33,7 @@ const router = createRouter({
       name: "ProfileEdit",
       component: PageProfile,
       props: { edit: true },
+      meta: { requiresAuth: true },
     },
     {
       path: "/category/:id",
@@ -72,12 +73,14 @@ const router = createRouter({
       name: "ThreadCreate",
       component: PageThreadCreate,
       props: true,
+      meta: { requiresAuth: true },
     },
     {
       path: "/thread/:id/edit",
       name: "ThreadEdit",
       component: PageThreadEdit,
       props: true,
+      meta: { requiresAuth: true },
     },
     {
       path: "/register",
