@@ -86,11 +86,13 @@ const router = createRouter({
       path: "/register",
       name: "Register",
       component: PageRegister,
+      meta: { requiresGuest: true },
     },
     {
       path: "/signin",
       name: "SignIn",
       component: PageSignIn,
+      meta: { requiresGuest: true },
     },
     {
       path: "/signout",
@@ -115,10 +117,13 @@ const router = createRouter({
   },
 });
 
-router.beforeEach((to, from) => {
-  console.log(`🚦 Navigating from ${from.name} to ${to.name} `);
+router.beforeEach(async (to, from) => {
   const usersStore = useUsersStore();
-  if (to.meta.requiresAuth && !usersStore.authId) return { name: "Home" };
+  await usersStore.initAuthentication();
+
+  console.log(`🚦 Navigating from ${from.name} to ${to.name} `);
+  if (to.meta.requiresAuth && !usersStore.authId) return { name: "SignIn" };
+  if (to.meta.requiresGuest && usersStore.authId) return { name: "Home" };
 });
 
 export default router;

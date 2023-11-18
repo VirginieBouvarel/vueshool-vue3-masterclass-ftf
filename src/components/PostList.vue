@@ -36,7 +36,7 @@
       </div>
 
       <a
-        v-if="post.userId === usersStore.authUser.id"
+        v-if="post.userId === usersStore.authUser?.id"
         @click.prevent="toggleEditMode(post.id)"
         href="#"
         style="margin-left: auto; padding-left: 10px"

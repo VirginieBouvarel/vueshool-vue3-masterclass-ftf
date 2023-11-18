@@ -25,8 +25,8 @@ export const useUsersStore = defineStore("UsersStore", {
     return {
       users: [],
       authId: null,
-      // authId: "oppNjkELJiWKrvx6oT6DOcxCE1C3",
       auth: null,
+      authObserverUnsubscribe: null,
     };
   },
   getters: {
@@ -78,20 +78,27 @@ export const useUsersStore = defineStore("UsersStore", {
         ids,
       });
     },
-    fetchAuthUser() {
+    async fetchAuthUser() {
       const auth = getAuth();
       const userId = auth.currentUser?.uid;
       if (!userId) return;
       this.authId = userId;
-      return this.fetchUser({ id: userId });
+      return await this.fetchUser({ id: userId });
     },
-    async listenAuthStateChanges() {
-      console.log("%c 👂listenAuthStateChanges", "color: yellow");
+    async initAuthentication() {
+      if (this.authObserverUnsubscribe) this.authObserverUnsubscribe();
       const auth = getAuth();
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          await this.fetchAuthUser();
-        }
+      return new Promise((resolve) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+          console.log("👣 the user has changed");
+          if (user) {
+            await this.fetchAuthUser();
+            resolve(user);
+          } else {
+            resolve(null);
+          }
+        });
+        this.authObserverUnsubscribe = unsubscribe;
       });
     },
     async registerUserWithEmailAndPassword({
@@ -114,19 +121,12 @@ export const useUsersStore = defineStore("UsersStore", {
       await signInWithEmailAndPassword(auth, email, password);
     },
     async signInWithGoogle() {
-      console.log("%c signInWithGoogle", "color: yellow");
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
       try {
         const { user } = await signInWithPopup(auth, provider);
-        console.log("%c user :", "color: yellow", user);
-
         const userRef = doc(db, "users", user.uid);
-        console.log("%c userRef :", "color: yellow", userRef);
-
         const userDoc = await getDoc(userRef);
-        console.log("%c userDoc :", "color: yellow", userDoc);
-
         if (!userDoc.exists()) {
           this.createUser({
             id: user.uid,
@@ -146,13 +146,6 @@ export const useUsersStore = defineStore("UsersStore", {
       this.authId = null;
     },
     async createUser({ id, email, name, username, avatar = null }) {
-      console.log("%c createUser :", "color: yellow", {
-        id,
-        email,
-        name,
-        username,
-        avatar,
-      });
       const registeredAt = serverTimestamp();
       const usernameLower = username.toLowerCase();
       const emailLower = email.toLowerCase();
@@ -164,7 +157,6 @@ export const useUsersStore = defineStore("UsersStore", {
         usernameLower,
         registeredAt,
       };
-      console.log("%c user :", "color: yellow", user);
 
       const userRef = doc(db, "users", id);
       await setDoc(userRef, user);

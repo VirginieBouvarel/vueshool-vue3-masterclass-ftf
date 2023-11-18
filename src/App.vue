@@ -14,12 +14,7 @@
   </div>
 </template>
 
-<script setup>
-import { useUsersStore } from "@/stores/UsersStore";
-const usersStore = useUsersStore();
-
-(async () => await usersStore.listenAuthStateChanges())();
-</script>
+<script setup></script>
 
 <style>
 @import "assets/style.css";
