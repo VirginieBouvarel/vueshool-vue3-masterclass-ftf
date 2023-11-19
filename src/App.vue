@@ -1,7 +1,7 @@
 <template>
   <the-navbar />
   <div class="container">
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component }" :key="route.path">
       <template v-if="Component">
         <Suspense>
           <component :is="Component"></component>
@@ -14,7 +14,10 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useRoute } from "vue-router";
+const route = useRoute();
+</script>
 
 <style>
 @import "assets/style.css";

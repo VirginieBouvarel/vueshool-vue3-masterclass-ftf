@@ -9,7 +9,13 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import db from "@/config/firebase";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import {
   getAuth,
   onAuthStateChanged,
@@ -157,15 +163,27 @@ export const useUsersStore = defineStore("UsersStore", {
         usernameLower,
         registeredAt,
       };
-
       const userRef = doc(db, "users", id);
       await setDoc(userRef, user);
       const newUser = await getDoc(userRef);
       this.users.push({ ...newUser.data(), id: newUser.id });
       return docToResource(newUser);
     },
-    updateUser(user) {
-      upsert(this.users, user);
+    async updateUser(user) {
+      const updates = {
+        avatar: user.avatar || null,
+        username: user.username || null,
+        name: user.name || null,
+        bio: user.bio || null,
+        website: user.website || null,
+        email: user.email || null,
+        location: user.location || null,
+      };
+      const userRef = doc(db, "users", user.id);
+      await updateDoc(userRef, updates);
+      const newUser = await getDoc(userRef);
+      upsert(this.users, { ...newUser.data(), id: newUser.id });
+      return docToResource(newUser);
     },
   },
 });

@@ -55,8 +55,6 @@ export const usePostsStore = defineStore("PostsStore", {
       );
       const postsSnap = await getDocs(postsQuery);
       postsSnap.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
         upsert(this.posts, { ...doc.data(), id: doc.id });
       });
     },

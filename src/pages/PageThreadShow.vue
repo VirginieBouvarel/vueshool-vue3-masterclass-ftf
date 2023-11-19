@@ -3,8 +3,13 @@
     <h1>
       {{ thread.title }}
       <router-link
+        :to="{ name: 'ThreadShow', params: { id: '-KsjWehQ--apjDBwSBCY' } }"
+      >
+        <button class="btn-green btn-small">Random Thread</button>
+      </router-link>
+      <router-link
         v-if="thread.userId === usersStore.authUser?.id"
-        :to="{ name: 'ThreadEdit', id: props.id }"
+        :to="{ name: 'ThreadEdit', params: { id: props.id } }"
       >
         <button class="btn-green btn-small">Edit Thread</button>
       </router-link>
