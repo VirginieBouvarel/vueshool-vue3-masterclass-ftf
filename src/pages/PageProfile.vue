@@ -1,8 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container" style="width: 100%">
     <div class="flex-grid">
-      <h1>My Profile</h1>
-      <!-- <div class="col-3 push-top">
+      <div class="col-3 push-top">
         <UserProfileCardEditor v-if="edit" :user="authUser" />
         <UserProfileCard v-else :user="authUser" />
       </div>
@@ -16,17 +15,22 @@
         </div>
         <hr />
         <PostList :posts="authUser.posts" />
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-// import { useUsersStore } from "@/stores/UsersStore";
-// import { storeToRefs } from "pinia";
-// const { authUser } = storeToRefs(useUsersStore());
+import { useUsersStore } from "@/stores/UsersStore";
+import { usePostsStore } from "@/stores/PostsStore";
+import { storeToRefs } from "pinia";
+
+const { authUser } = storeToRefs(useUsersStore());
+const postsStore = usePostsStore();
 
 defineProps({
   edit: { type: Boolean, default: false },
 });
+
+await postsStore.fetchAuthUserPosts();
 </script>

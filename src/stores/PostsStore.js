@@ -15,8 +15,11 @@ import {
   writeBatch,
   arrayUnion,
   getDoc,
+  getDocs,
   increment,
   serverTimestamp,
+  query,
+  where,
 } from "firebase/firestore";
 
 export const usePostsStore = defineStore("PostsStore", {
@@ -27,6 +30,36 @@ export const usePostsStore = defineStore("PostsStore", {
   },
   getters: {},
   actions: {
+    fetchPost({ id }) {
+      return fetchItem({
+        resources: this.posts,
+        collection: "posts",
+        emoji: "💬",
+        id,
+      });
+    },
+    fetchPosts({ ids }) {
+      return fetchItems({
+        resources: this.posts,
+        collection: "posts",
+        emoji: "💬",
+        ids,
+      });
+    },
+    async fetchAuthUserPosts() {
+      const usersStore = useUsersStore();
+      const postsRef = collection(db, "posts");
+      const postsQuery = query(
+        postsRef,
+        where("userId", "==", usersStore.authId)
+      );
+      const postsSnap = await getDocs(postsQuery);
+      postsSnap.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        upsert(this.posts, { ...doc.data(), id: doc.id });
+      });
+    },
     async createPost(post) {
       const usersStore = useUsersStore();
       const threadsStore = useThreadsStore();
@@ -85,22 +118,6 @@ export const usePostsStore = defineStore("PostsStore", {
       child: "contributors",
       parent: "threads",
     }),
-    fetchPost({ id }) {
-      return fetchItem({
-        resources: this.posts,
-        collection: "posts",
-        emoji: "💬",
-        id,
-      });
-    },
-    fetchPosts({ ids }) {
-      return fetchItems({
-        resources: this.posts,
-        collection: "posts",
-        emoji: "💬",
-        ids,
-      });
-    },
   },
 });
 
