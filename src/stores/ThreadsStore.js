@@ -10,6 +10,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import { useAuthStore } from "@/stores/AuthStore";
 import db from "@/config/firebase";
 import {
   doc,
@@ -65,10 +66,11 @@ export const useThreadsStore = defineStore("ThreadsStore", {
     },
     async createThread({ text, title, forumId }) {
       const usersStore = useUsersStore();
+      const authStore = useAuthStore();
       const forumsStore = useForumsStore();
       const postsStore = usePostsStore();
 
-      const userId = usersStore.authUser.id;
+      const userId = authStore.authUser.id;
       const publishedAt = Math.floor(Date.now() / 1000);
 
       const threadRef = doc(collection(db, "threads"));

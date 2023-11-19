@@ -64,10 +64,10 @@
 <script setup>
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useAuthStore } from "@/stores/AuthStore";
 
 const router = useRouter();
-const usersStore = useUsersStore();
+const authStore = useAuthStore();
 
 const form = reactive({
   name: "",
@@ -78,11 +78,11 @@ const form = reactive({
 });
 
 async function register() {
-  await usersStore.registerUserWithEmailAndPassword(form);
+  await authStore.registerUserWithEmailAndPassword(form);
   router.push({ name: "Home" });
 }
 async function registerWithGoogle() {
-  await usersStore.signInWithGoogle();
+  await authStore.signInWithGoogle();
   router.push({ name: "Home" });
 }
 </script>

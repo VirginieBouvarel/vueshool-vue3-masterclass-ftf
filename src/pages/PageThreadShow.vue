@@ -8,7 +8,7 @@
         <button class="btn-green btn-small">Random Thread</button>
       </router-link>
       <router-link
-        v-if="thread.userId === usersStore.authUser?.id"
+        v-if="thread.userId === authStore.authUser?.id"
         :to="{ name: 'ThreadEdit', params: { id: props.id } }"
       >
         <button class="btn-green btn-small">Edit Thread</button>
@@ -27,7 +27,7 @@
     </p>
 
     <post-list :posts="threadPosts" />
-    <post-editor v-if="usersStore.authUser" @save="addPost" />
+    <post-editor v-if="authStore.authUser" @save="addPost" />
     <div v-else class="text-center" style="margin-bottom: 50px">
       <router-link :to="{ name: 'SignIn', query: { redirectTo: route.path } }">
         Sign In
@@ -48,11 +48,13 @@ import { computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useUsersStore } from "@/stores/UsersStore";
+import { useAuthStore } from "@/stores/AuthStore";
 import { useRoute } from "vue-router";
 
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 const usersStore = useUsersStore();
+const authStore = useAuthStore();
 const route = useRoute();
 
 const props = defineProps({

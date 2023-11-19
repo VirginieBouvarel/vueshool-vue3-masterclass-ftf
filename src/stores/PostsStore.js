@@ -7,7 +7,7 @@ import {
 } from "@/helpers";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useThreadsStore } from "@/stores/ThreadsStore";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useAuthStore } from "@/stores/AuthStore";
 import db from "@/config/firebase";
 import {
   doc,
@@ -15,11 +15,8 @@ import {
   writeBatch,
   arrayUnion,
   getDoc,
-  getDocs,
   increment,
   serverTimestamp,
-  query,
-  where,
 } from "firebase/firestore";
 
 export const usePostsStore = defineStore("PostsStore", {
@@ -46,23 +43,11 @@ export const usePostsStore = defineStore("PostsStore", {
         ids,
       });
     },
-    async fetchAuthUserPosts() {
-      const usersStore = useUsersStore();
-      const postsRef = collection(db, "posts");
-      const postsQuery = query(
-        postsRef,
-        where("userId", "==", usersStore.authId)
-      );
-      const postsSnap = await getDocs(postsQuery);
-      postsSnap.forEach((doc) => {
-        upsert(this.posts, { ...doc.data(), id: doc.id });
-      });
-    },
     async createPost(post) {
-      const usersStore = useUsersStore();
+      const authStore = useAuthStore();
       const threadsStore = useThreadsStore();
 
-      post.userId = usersStore.authUser.id;
+      post.userId = authStore.authUser.id;
       post.publishedAt = Math.floor(Date.now() / 1000);
 
       const postRef = doc(collection(db, "posts"));
@@ -91,12 +76,12 @@ export const usePostsStore = defineStore("PostsStore", {
       });
     },
     async updatePost({ text, id }) {
-      const usersStore = useUsersStore();
+      const authStore = useAuthStore();
       const post = {
         text,
         edited: {
           at: serverTimestamp(),
-          by: usersStore.authUser.id,
+          by: authStore.authUser.id,
           moderated: false,
         },
       };

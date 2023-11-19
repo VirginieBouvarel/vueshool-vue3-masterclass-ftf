@@ -47,12 +47,10 @@
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
               <li class="dropdown-menu-item">
-                <router-link :to="{ name: 'Profile' }">
-                  View profile
-                </router-link>
+                <router-link :to="{ name: 'Profile' }"> Profile </router-link>
               </li>
               <li class="dropdown-menu-item">
-                <a @click.prevent="usersStore.signOut">Sign Out</a>
+                <router-link :to="{ name: 'SignOut' }"> Sign Out </router-link>
               </li>
             </ul>
           </div>
@@ -70,11 +68,10 @@
 
 <script setup>
 import { ref } from "vue";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useAuthStore } from "@/stores/AuthStore";
 import { storeToRefs } from "pinia";
 
-const usersStore = useUsersStore();
-const { authUser } = storeToRefs(useUsersStore());
+const { authUser } = storeToRefs(useAuthStore());
 
 const userDropdownOpen = ref(false);
 </script>

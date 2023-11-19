@@ -1,7 +1,7 @@
 import { findById } from "@/helpers";
 import { createRouter, createWebHistory } from "vue-router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useAuthStore } from "@/stores/AuthStore";
 
 import PageHome from "@/pages/PageHome.vue";
 import PageForum from "@/pages/PageForum.vue";
@@ -98,8 +98,8 @@ const router = createRouter({
       path: "/signout",
       name: "SignOut",
       async beforeEnter(_to, _from, next) {
-        const usersStore = useUsersStore();
-        await usersStore.signOut();
+        const authStore = useAuthStore();
+        await authStore.signOut();
         return next({ name: "Home" });
       },
     },
@@ -118,14 +118,14 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  const usersStore = useUsersStore();
-  await usersStore.initAuthentication();
+  const authStore = useAuthStore();
+  await authStore.initAuthentication();
 
   console.log(`🚦 Navigating from ${from.name} to ${to.name} `);
-  if (to.meta.requiresAuth && !usersStore.authId) {
+  if (to.meta.requiresAuth && !authStore.authId) {
     return { name: "SignIn", query: { redirectTo: to.path } };
   }
-  if (to.meta.requiresGuest && usersStore.authId) return { name: "Home" };
+  if (to.meta.requiresGuest && authStore.authId) return { name: "Home" };
 });
 
 export default router;

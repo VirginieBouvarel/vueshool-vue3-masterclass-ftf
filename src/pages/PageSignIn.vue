@@ -45,10 +45,11 @@
 
 <script setup>
 import { reactive } from "vue";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useAuthStore } from "@/stores/AuthStore";
+
 import { useRoute, useRouter } from "vue-router";
 
-const usersStore = useUsersStore();
+const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -59,14 +60,14 @@ const form = reactive({
 
 async function signIn() {
   try {
-    await usersStore.signInWithEmailAndPassword({ ...form });
+    await authStore.signInWithEmailAndPassword({ ...form });
     successRedirect();
   } catch (error) {
     alert(error.message);
   }
 }
 async function signInWithGoogle() {
-  await usersStore.signInWithGoogle();
+  await authStore.signInWithGoogle();
   successRedirect();
 }
 

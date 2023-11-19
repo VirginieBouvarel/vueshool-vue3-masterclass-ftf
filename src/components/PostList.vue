@@ -36,7 +36,7 @@
       </div>
 
       <a
-        v-if="post.userId === usersStore.authUser?.id"
+        v-if="post.userId === authStore.authUser?.id"
         @click.prevent="toggleEditMode(post.id)"
         href="#"
         style="margin-left: auto; padding-left: 10px"
@@ -58,6 +58,9 @@
 import { ref } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import { useAuthStore } from "@/stores/AuthStore";
+
+const authStore = useAuthStore();
 const usersStore = useUsersStore();
 
 const props = defineProps({
